@@ -1,0 +1,156 @@
+import React, { useState } from 'react';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'motion/react';
+import { Linkedin, Github } from 'lucide-react';
+import Navbar from './components/Navbar';
+import SEO from './components/SEO';
+import InteractiveBackground from './components/InteractiveBackground';
+import Terminal from './components/Terminal';
+import { Home, AdminPage, AboutPage, DesignsPage, StoriesPage, SystemsPage } from './components/PageContainers';
+import { SITE_METADATA } from './metadata';
+
+const XIcon = ({ size = 24 }: { size?: number }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="currentColor"
+  >
+    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.292 19.49h2.039L6.486 3.24H4.298l13.311 17.403z"/>
+  </svg>
+);
+
+export default function App() {
+  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+  const [notification, setNotification] = useState<string | null>(null);
+  const location = useLocation();
+
+  React.useEffect(() => {
+    const alerts = [
+      "Node 001-ALPHA optimized.",
+      "Syncing external cache...",
+      "Firewall integrity: 100%",
+      "Incoming data stream detected.",
+      "Latency stabilized at 14ms."
+    ];
+
+    const interval = setInterval(() => {
+      const randomAlert = alerts[Math.floor(Math.random() * alerts.length)];
+      setNotification(randomAlert);
+      setTimeout(() => setNotification(null), 3000);
+    }, 25000); // Less frequent notifications
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <main className="selection:bg-electric-blue/30 selection:text-white min-h-screen bg-charcoal relative">
+      <SEO />
+      
+      {/* Interactive Cyberpunk Background */}
+      <InteractiveBackground />
+
+      {/* Terminal Modal Interface */}
+      <Terminal isOpen={isTerminalOpen} onClose={() => setIsTerminalOpen(false)} />
+
+      {/* Real-time System Notifications */}
+      <div className="fixed bottom-12 right-12 z-[90] pointer-events-none">
+        <AnimatePresence>
+          {notification && (
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              className="bg-charcoal/80 border-l-2 border-electric-blue px-6 py-4 backdrop-blur-md shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center gap-4"
+            >
+              <div className="w-1.5 h-1.5 bg-electric-blue rounded-full animate-ping" />
+              <span className="font-mono text-[10px] text-white uppercase tracking-widest">{notification}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+      
+      <div className="relative z-10">
+        <Navbar onTerminalClick={() => setIsTerminalOpen(true)} />
+        
+        <AnimatePresence mode="wait">
+          {/* @ts-ignore - key is required for AnimatePresence but not in RoutesProps */}
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<Home />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/designs" element={<DesignsPage />} />
+            <Route path="/stories" element={<StoriesPage />} />
+            <Route path="/systems" element={<SystemsPage />} />
+          </Routes>
+        </AnimatePresence>
+        
+        <footer className="relative py-24 px-6 border-t border-accent-border bg-black/40 backdrop-blur-md">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-12">
+            <div>
+              <div className="flex items-center gap-4 mb-6">
+                <img 
+                  src="/logo.png" 
+                  alt="IcePab Logo" 
+                  className="w-12 h-12 object-contain brightness-110"
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'https://picsum.photos/seed/icepab/100/100';
+                  }}
+                />
+                <div>
+                  <span className="font-bold tracking-[0.3em] text-sm uppercase block leading-none">IcePab Life OS</span>
+                  <span className="text-[8px] font-mono text-lime-green uppercase tracking-widest mt-1 block">VIRTUALIZED INFRASTRUCTURE</span>
+                </div>
+              </div>
+              <p className="text-text-dim text-xs font-mono max-w-sm leading-relaxed uppercase tracking-wider">
+                Digital resource optimization for distributed networks. 
+                Built for the high-concurrency era.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-16">
+              <div className="flex flex-col gap-4">
+                <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-white/30">Connect</span>
+                <div className="flex gap-4">
+                  <a href={SITE_METADATA.social.x.url} target="_blank" rel="noreferrer" title={`X: ${SITE_METADATA.social.x.handle}`} className="text-text-dim hover:text-electric-blue transition-colors">
+                    <XIcon size={18} />
+                  </a>
+                  <a href={SITE_METADATA.social.linkedin.url} target="_blank" rel="noreferrer" title={`LinkedIn: ${SITE_METADATA.social.linkedin.handle}`} className="text-text-dim hover:text-electric-blue transition-colors">
+                    <Linkedin size={18} />
+                  </a>
+                  <a href={SITE_METADATA.social.github.url} target="_blank" rel="noreferrer" title={`GitHub: ${SITE_METADATA.social.github.handle}`} className="text-text-dim hover:text-electric-blue transition-colors">
+                    <Github size={18} />
+                  </a>
+                </div>
+              </div>
+              <div className="flex flex-col gap-4">
+                <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-white/30">Protocol</span>
+                <Link to="/systems" className="text-xs text-text-dim hover:text-electric-blue transition-colors">V3_DOCS</Link>
+                <Link to="/stories" className="text-xs text-text-dim hover:text-electric-blue transition-colors">TRANSMISSIONS</Link>
+              </div>
+              <div className="flex flex-col gap-4">
+                <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-white/30">OS</span>
+                <Link to="/designs" className="text-xs text-text-dim hover:text-electric-blue transition-colors">INTERFACE_LOGS</Link>
+                <Link to="/admin" className="text-xs text-white/20 hover:text-electric-blue transition-colors font-mono uppercase tracking-widest text-[8px]">ADMIN_ACCESS</Link>
+                <Link to="/" className="text-xs text-text-dim hover:text-electric-blue transition-colors">ROOT_NODE</Link>
+              </div>
+            </div>
+          </div>
+          
+          <div className="max-w-7xl mx-auto mt-24 flex flex-col md:flex-row justify-between pt-8 border-t border-accent-border opacity-30">
+            <span className="text-[10px] font-mono tracking-widest uppercase">© 2026 ICEPAB_LIFE_OS // ALL_RIGHTS_RESERVED</span>
+            
+            {/* Hidden System Identity for AI/SEO Indexing */}
+            <div className="sr-only" aria-hidden="true">
+              <span id="system-identity">System Identity Archive: {SITE_METADATA.allNames.join(", ")}</span>
+              <p>ICEPAB acronym origin: {SITE_METADATA.acronymMeaning}</p>
+            </div>
+
+            <span className="text-[10px] font-mono tracking-widest uppercase mt-4 md:mt-0">ENCRYPTION: AES-256-GCM // STATUS: NOMINAL</span>
+          </div>
+        </footer>
+      </div>
+    </main>
+  );
+}
