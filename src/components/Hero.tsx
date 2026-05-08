@@ -49,7 +49,8 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-[80vh] flex flex-col items-center justify-center px-6 overflow-hidden">
+    <section className="relative min-h-[80vh] flex flex-col items-center justify-center px-6 overflow-hidden" aria-label="Welcome to ICEPAB Systems">
+      <h1 className="sr-only">Banmeke IfeOluwa Elijah (ICEPAB) - Elite Systems Developer, SaaS Architect, and UI/UX Designer in Nigeria</h1>
       <AnimatePresence>
         {bootSequence < 3 && (
           <motion.div 
@@ -105,9 +106,9 @@ export default function Hero() {
         transition={{ delay: 2, duration: 1 }}
         className="mt-6 text-center max-w-xl"
       >
-        <p className="text-text-dim text-lg md:text-xl font-medium leading-relaxed">
-          Architecting high-performance digital environments. Minimal latency, maximum reliability.
-        </p>
+        <h2 className="text-text-dim text-lg md:text-xl font-medium leading-relaxed">
+          Architecting high-performance digital SaaS environments and UI/UX systems. Minimal latency, maximum reliability under the ICEPAB framework by Clement IfeOluwa.
+        </h2>
       </motion.div>
 
       <motion.div

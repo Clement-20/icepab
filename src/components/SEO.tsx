@@ -11,7 +11,7 @@ interface SEOProps {
 export default function SEO({ 
   title = SITE_METADATA.title, 
   description = SITE_METADATA.description,
-  image = `${SITE_METADATA.url}/og-image.png`
+  image = SITE_METADATA.ogImage
 }: SEOProps) {
   const organizationSchema = {
     "@context": "https://schema.org",
@@ -27,6 +27,8 @@ export default function SEO({
     ]
   };
 
+  const finalTitle = title.includes('|') ? title : `${title} | ICEPAB`;
+
   return (
     <>
       <JsonLd />
@@ -36,8 +38,10 @@ export default function SEO({
       </script>
 
       {/* Primary Meta Tags */}
-      <title>{`${title} | IcePab`}</title>
+      <title>{finalTitle}</title>
       <meta name="description" content={description} />
+      <meta name="keywords" content={SITE_METADATA.keywords} />
+      <meta name="author" content={SITE_METADATA.author} />
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content="website" />

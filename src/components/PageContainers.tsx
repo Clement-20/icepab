@@ -8,6 +8,7 @@ import DesignGallery from './DesignGallery';
 import EditorialStories from './EditorialStories';
 import ProjectHub from './ProjectHub';
 import MediaGallery from './MediaGallery';
+import WikipediaGallery from './WikipediaGallery';
 import UploadTerminal from './UploadTerminal';
 import SEO from './SEO';
 import { SITE_METADATA } from '../metadata';
@@ -84,9 +85,9 @@ export function DesignsPage() {
       <div className="pt-24 min-h-screen">
         <div className="px-6 max-w-7xl mx-auto pt-12 pb-8">
           <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.8] mb-4">Design Artifacts</h1>
-          <p className="text-text-dim text-lg max-w-xl">A collection of visual and functional interface explorations, designed with precision and transparency.</p>
+          <p className="text-text-dim text-lg max-w-xl">Museum archive of visual explorations, documenting technical systems and high-fidelity artifacts.</p>
         </div>
-        <DesignGallery />
+        <WikipediaGallery />
       </div>
     </PageWrapper>
   );

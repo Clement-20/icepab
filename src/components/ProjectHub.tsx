@@ -28,14 +28,14 @@ export default function ProjectHub() {
   };
 
   return (
-    <section className="py-24 px-6 max-w-7xl mx-auto">
+    <section className="py-24 px-6 max-w-7xl mx-auto" aria-label="ICEPAB SaaS Ecosystem Directory">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
         <div>
           <span className="text-electric-blue font-mono text-xs uppercase tracking-[0.4em] mb-4 block">Central Hub / Ecosystem</span>
-          <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.8]">The App Directory</h2>
+          <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.8]">ICEPAB Software Directory</h2>
         </div>
         <p className="max-w-md text-text-dim text-lg leading-relaxed md:mb-1">
-          Explore the projects and platforms built within the IcePab network. Each node in this directory represents a modular solution for the modern web.
+          Explore the SaaS projects and platforms built within the ICEPAB network by Clement IfeOluwa. Each node in this directory represents a modular solution targeting UI/UX and process automation.
         </p>
       </div>
 

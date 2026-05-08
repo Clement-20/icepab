@@ -1,32 +1,54 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { BookOpen, Clock } from 'lucide-react';
+import { SITE_METADATA } from '../metadata';
 
 const stories = [
   {
     id: '1',
     title: 'The Architecture of Personal Operating Systems',
-    excerpt: 'How we transition from static portfolios to dynamic, living digital environments. The journey of building the IcePab Life OS...',
+    excerpt: 'How we transition from static portfolios to dynamic, living digital environments. The journey of building the ICEPAB Life OS...',
     date: 'APRIL 14, 2026',
-    author: 'IcePab Root',
+    author: SITE_METADATA.alias,
     readTime: '12 MIN'
   },
   {
     id: '2',
-    title: 'Decentralization and the Future of Social Identity',
-    excerpt: 'Exploring the intersection of cryptographic verifiable identity and the human need for authentic connection in a post-human era...',
+    title: 'Decentralization and the Future of SaaS Identity',
+    excerpt: 'Exploring the intersection of cryptographic verifiable identity and the human need for authentic connection in an automated SaaS era...',
     date: 'MARCH 22, 2026',
-    author: 'IcePab Systems',
+    author: SITE_METADATA.fullName,
     readTime: '15 MIN'
   }
 ];
 
 export default function EditorialStories() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "ICEPAB Digital Editorials",
+    "description": "Tech insights from Banmeke IfeOluwa Elijah on SaaS, UI/UX, and Systems.",
+    "blogPost": stories.map(story => ({
+      "@type": "BlogPosting",
+      "headline": story.title,
+      "datePublished": story.date,
+      "author": {
+        "@type": "Person",
+        "name": story.author
+      },
+      "description": story.excerpt
+    }))
+  };
+
   return (
-    <section className="py-24 px-6 max-w-4xl mx-auto">
+    <section className="py-24 px-6 max-w-4xl mx-auto" aria-labelledby="editorial-heading">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="flex items-center gap-4 mb-20 text-center">
         <div className="h-[1px] flex-grow bg-white/10" />
-        <h2 className="text-3xl font-extralight tracking-[0.4em] uppercase">Stories</h2>
+        <h2 id="editorial-heading" className="text-3xl font-extralight tracking-[0.4em] uppercase">Stories</h2>
         <div className="h-[1px] flex-grow bg-white/10" />
       </div>
 

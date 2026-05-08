@@ -20,10 +20,10 @@ const paths = [
 
 export default function SystemTransparency() {
   return (
-    <section className="py-24 px-6 max-w-7xl mx-auto">
+    <section className="py-24 px-6 max-w-7xl mx-auto" aria-labelledby="transparency-heading">
       <div className="flex items-center gap-4 mb-12">
-        <Cpu className="text-electric-blue w-6 h-6" />
-        <h2 className="text-2xl font-bold tracking-tighter uppercase italic">System Transparency</h2>
+        <Cpu aria-hidden="true" className="text-electric-blue w-6 h-6" />
+        <h2 id="transparency-heading" className="text-2xl font-bold tracking-tighter uppercase italic">ICEPAB System Transparency</h2>
         <div className="h-[1px] flex-grow bg-white/10" />
       </div>
 
@@ -32,7 +32,7 @@ export default function SystemTransparency() {
         <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
         
         {/* Connection Lines (Static SVG) */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none">
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true">
           {paths.map((path, i) => {
             const from = nodes.find(n => n.id === path.from)!;
             const to = nodes.find(n => n.id === path.to)!;
@@ -86,6 +86,7 @@ export default function SystemTransparency() {
               <motion.div 
                 whileHover={{ scale: 1.1, borderColor: 'rgba(0, 229, 255, 0.5)' }}
                 className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-xl group transition-colors"
+                aria-hidden="true"
               >
                 <node.icon className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:text-electric-blue transition-colors" />
                 
@@ -105,14 +106,14 @@ export default function SystemTransparency() {
 
         {/* Monitor Overlays */}
         <div className="absolute top-6 left-6 flex items-center gap-2">
-          <div className="w-1 h-1 rounded-full bg-red-500 animate-pulse" />
-          <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest leading-none">Live Monitoring Active</span>
+          <div className="w-1 h-1 rounded-full bg-red-500 animate-pulse" aria-hidden="true" />
+          <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest leading-none">ICEPAB Live Auth Active</span>
         </div>
         
         <div className="absolute bottom-6 right-6 flex items-center gap-6">
           <div className="flex flex-col items-end">
             <span className="text-[8px] font-mono text-white/30 truncate uppercase">Throughput</span>
-            <span className="text-[10px] font-mono text-electric-blue">1.2 TB / S</span>
+            <span className="text-[10px] font-mono text-electric-blue">OPTIMAL</span>
           </div>
           <div className="flex flex-col items-end">
             <span className="text-[8px] font-mono text-white/30 truncate uppercase">Sync Status</span>
@@ -123,21 +124,21 @@ export default function SystemTransparency() {
       
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="p-6 bg-white/5 border border-white/10 rounded-xl backdrop-blur-md">
-          <h4 className="text-[10px] font-mono uppercase text-electric-blue mb-2">Protocol Transparency</h4>
+          <h3 className="text-[10px] font-mono uppercase text-electric-blue mb-2">Protocol Transparency</h3>
           <p className="text-xs text-text-dim leading-relaxed">
-            Real-time visualization of digital asset migration across our distributed edge nodes. Every packet is verified via the system core.
+            Real-time visualization of digital asset migration across the ICEPAB distributed edge nodes. Every packet is verified by Clement IfeOluwa proxy systems.
           </p>
         </div>
         <div className="p-6 bg-white/5 border border-white/10 rounded-xl backdrop-blur-md">
-          <h4 className="text-[10px] font-mono uppercase text-electric-blue mb-2">Node Distribution</h4>
+          <h3 className="text-[10px] font-mono uppercase text-electric-blue mb-2">Banmeke System Core</h3>
           <p className="text-xs text-text-dim leading-relaxed">
-            Our adaptive routing ensures minimal hop-count by dynamically repositioning ingress points based on regional demand spikes.
+            Our adaptive routing ensures minimal hop-count by dynamically repositioning UI/UX ingress points based on regional demand spikes.
           </p>
         </div>
         <div className="p-6 bg-white/5 border border-white/10 rounded-xl backdrop-blur-md">
-          <h4 className="text-[10px] font-mono uppercase text-electric-blue mb-2">Logic Architecture</h4>
+          <h3 className="text-[10px] font-mono uppercase text-electric-blue mb-2">SaaS Architecture</h3>
           <p className="text-xs text-text-dim leading-relaxed">
-            Multi-layered security protocols operate at the proxy level before any data reaches the high-performance system core.
+            Multi-layered security protocols operate at the proxy level before any data reaches the high-performance ICEPAB system core.
           </p>
         </div>
       </div>

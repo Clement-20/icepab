@@ -1,6 +1,6 @@
 export const SITE_METADATA = {
-  title: "IcePab Life OS",
-  description: "Systems developer, UI/UX designer, and founder of ICEPAB Systems. Widely known as Clement IfeOluwa.",
+  title: "Banmeke IfeOluwa Elijah (ICEPAB) | Systems Developer & Designer",
+  description: "The official digital home of Clement IfeOluwa (ICEPAB). High-end SaaS development, graphic design, and 'Glass Box' systems.",
   author: "Banmeke IfeOluwa Elijah (ICEPAB)",
   fullName: "Banmeke IfeOluwa Elijah",
   alternateNames: [
@@ -10,6 +10,8 @@ export const SITE_METADATA = {
   ],
   jobTitle: "SaaS Developer & Graphic Designer",
   knowsAbout: ["Business Administration", "Explainable AI", "UI/UX", "Automation"],
+  keywords: "ICEPAB, Clement IfeOluwa, Banmeke IfeOluwa Elijah, OAU Business Admin, UI/UX Nigeria, Vibe Coding",
+  ogImage: "https://icepab.name.ng/headshot.jpg", // Placeholder for professional headshot
   allNames: ["Banmeke", "IfeOluwa", "Elijah", "Clement", "Precious", "Abayomi"],
   alias: "ICEPAB",
   acronymMeaning: "IfeOluwa, Clement, Precious, Abayomi, Banmeke",
