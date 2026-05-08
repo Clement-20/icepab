@@ -92,12 +92,19 @@ export default function App() {
                 <img 
                   src="/logo.png" 
                   alt="IcePab Logo" 
-                  className="w-12 h-12 object-contain brightness-110"
+                  className="w-12 h-12 object-contain brightness-110 hidden"
                   referrerPolicy="no-referrer"
+                  onLoad={(e) => {
+                    (e.target as HTMLImageElement).classList.remove('hidden');
+                    (e.target as HTMLImageElement).nextElementSibling?.classList.add('hidden');
+                  }}
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://picsum.photos/seed/icepab/100/100';
+                    (e.target as HTMLImageElement).style.display = 'none';
                   }}
                 />
+                <div className="w-12 h-12 border border-lime-green/30 bg-black/50 flex items-center justify-center font-black font-mono text-lime-green text-sm tracking-tighter">
+                  IP
+                </div>
                 <div>
                   <span className="font-bold tracking-[0.3em] text-sm uppercase block leading-none">IcePab Life OS</span>
                   <span className="text-[8px] font-mono text-lime-green uppercase tracking-widest mt-1 block">VIRTUALIZED INFRASTRUCTURE</span>

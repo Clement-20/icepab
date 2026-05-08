@@ -1,5 +1,6 @@
 import React from 'react';
-import { SITE_METADATA } from '../metadata';
+import { Helmet } from 'react-helmet-async';
+import { useKnowledge } from '../contexts/KnowledgeContext';
 import JsonLd from './JsonLd';
 
 interface SEOProps {
@@ -9,53 +10,61 @@ interface SEOProps {
 }
 
 export default function SEO({ 
-  title = SITE_METADATA.title, 
-  description = SITE_METADATA.description,
-  image = SITE_METADATA.ogImage
+  title, 
+  description,
+  image
 }: SEOProps) {
+  const { knowledge } = useKnowledge();
+  
+  const activeTitle = title || knowledge.title;
+  const activeDescription = description || knowledge.description;
+  const activeImage = image || knowledge.ogImage;
+
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "IcePab Systems",
-    "url": SITE_METADATA.url,
-    "logo": `${SITE_METADATA.url}/logo.png`,
-    "description": description,
+    "name": "ICEPAB Systems",
+    "url": knowledge.url,
+    "logo": `${knowledge.url}/logo.png`,
+    "description": activeDescription,
     "sameAs": [
-      SITE_METADATA.social.x.url,
-      SITE_METADATA.social.linkedin.url,
-      SITE_METADATA.social.github.url
+      knowledge.social.x.url,
+      knowledge.social.linkedin.url,
+      knowledge.social.github.url
     ]
   };
 
-  const finalTitle = title.includes('|') ? title : `${title} | ICEPAB`;
+  const finalTitle = activeTitle.includes('|') ? activeTitle : `${activeTitle} | ${knowledge.alias}`;
 
   return (
     <>
       <JsonLd />
-      {/* JSON-LD Organization Schema */}
-      <script type="application/ld+json">
-        {JSON.stringify(organizationSchema)}
-      </script>
+      <Helmet>
+        {/* JSON-LD Organization Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify(organizationSchema)}
+        </script>
 
-      {/* Primary Meta Tags */}
-      <title>{finalTitle}</title>
-      <meta name="description" content={description} />
-      <meta name="keywords" content={SITE_METADATA.keywords} />
-      <meta name="author" content={SITE_METADATA.author} />
+        {/* Primary Meta Tags */}
+        <title>{finalTitle}</title>
+        <meta name="description" content={activeDescription} />
+        <meta name="keywords" content={knowledge.keywords} />
+        <meta name="author" content={knowledge.author} />
 
-      {/* Open Graph / Facebook */}
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content={SITE_METADATA.url} />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:image" content={image} />
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={knowledge.url} />
+        <meta property="og:title" content={finalTitle} />
+        <meta property="og:description" content={activeDescription} />
+        <meta property="og:image" content={activeImage} />
 
-      {/* Twitter */}
-      <meta property="twitter:card" content="summary_large_image" />
-      <meta property="twitter:url" content={SITE_METADATA.url} />
-      <meta property="twitter:title" content={title} />
-      <meta property="twitter:description" content={description} />
-      <meta property="twitter:image" content={image} />
+        {/* Twitter */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content={knowledge.url} />
+        <meta property="twitter:title" content={finalTitle} />
+        <meta property="twitter:description" content={activeDescription} />
+        <meta property="twitter:image" content={activeImage} />
+      </Helmet>
     </>
   );
 }

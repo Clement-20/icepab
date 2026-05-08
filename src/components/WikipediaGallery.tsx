@@ -47,15 +47,40 @@ export default function WikipediaGallery() {
             transition={{ duration: 0.8, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
             className="group relative break-inside-avoid rounded-sm border border-white/5 bg-black/20 overflow-hidden cursor-crosshair"
           >
-            {/* Image Section */}
-            <div className="relative overflow-hidden">
-              <img
-                src={artifact.url}
-                alt={`${artifact.alt} - Artifact by ${SITE_METADATA.fullName} (ICEPAB)`}
-                loading="lazy"
-                referrerPolicy="no-referrer"
-                className="w-full h-auto grayscale group-hover:grayscale-0 transition-all duration-1000 ease-in-out group-hover:scale-[1.02]"
-              />
+            {/* Smart Procedural Asset Block */}
+            <div className="relative w-full aspect-square md:aspect-[4/5] bg-gradient-to-b from-white/5 to-transparent flex flex-col justify-between p-6 overflow-hidden">
+              <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.4) 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+              
+              {/* Animated algorithmic visualizer */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 group-hover:opacity-60 transition-opacity duration-700">
+                <div 
+                  className="w-3/4 h-3/4 border border-electric-blue rounded-full absolute mix-blend-screen scale-[0.8] group-hover:scale-100 transition-all duration-1000 ease-out"
+                  style={{ transform: `rotate(${i * 45}deg) scaleY(${0.8 + (i % 3) * 0.1})` }}
+                />
+                <div 
+                  className="w-1/2 h-1/2 border border-white rounded-full absolute mix-blend-screen scale-110 group-hover:scale-[0.9] transition-all duration-1000 ease-out"
+                  style={{ transform: `rotate(${-(i + 1) * 30}deg) scaleX(${0.8 + (i % 2) * 0.15})` }}
+                />
+              </div>
+
+              <div className="relative z-10 flex justify-between items-start">
+                <span className="text-[10px] text-electric-blue font-mono font-bold uppercase tracking-widest block px-2 py-1 bg-black/50 backdrop-blur rounded border border-white/5">
+                  SYS_ID: 0x{artifact.id.padStart(4, '0')}
+                </span>
+                <span className="text-[10px] text-white/50 font-mono tracking-widest px-2 py-1 bg-black/20 rounded">
+                  [{artifact.width}×{artifact.height}]
+                </span>
+              </div>
+              
+              <div className="relative z-10 mt-auto">
+                 <div className="h-px bg-gradient-to-r from-electric-blue to-transparent w-12 group-hover:w-full transition-all duration-1000 ease-out mb-4 opacity-50" />
+                 <h4 className="text-xl font-black uppercase tracking-tighter text-white/90 group-hover:text-white line-clamp-2">
+                   {artifact.alt}
+                 </h4>
+              </div>
+
+              {/* Keep image URL in DOM for SEO/accessibility without showing it visually */}
+              <img src={artifact.url} alt={artifact.alt} className="sr-only" />
               
               {/* Asset Overlay Actions */}
               <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-4 group-hover:translate-x-0">

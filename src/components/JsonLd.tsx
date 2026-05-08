@@ -1,20 +1,23 @@
 import React from 'react';
-import { SITE_METADATA } from '../metadata';
+import { Helmet } from 'react-helmet-async';
+import { useKnowledge } from '../contexts/KnowledgeContext';
 
 export default function JsonLd() {
+  const { knowledge } = useKnowledge();
+
   const personSchema = {
     "@context": "https://schema.org",
     "@type": "Person",
-    "name": SITE_METADATA.fullName,
-    "alternateName": SITE_METADATA.alternateNames,
-    "description": SITE_METADATA.description,
-    "url": SITE_METADATA.url,
-    "jobTitle": SITE_METADATA.jobTitle,
-    "knowsAbout": SITE_METADATA.knowsAbout,
+    "name": knowledge.fullName,
+    "alternateName": knowledge.alternateNames,
+    "description": knowledge.description,
+    "url": knowledge.url,
+    "jobTitle": knowledge.jobTitle,
+    "knowsAbout": knowledge.knowsAbout,
     "sameAs": [
-      SITE_METADATA.social.x.url,
-      SITE_METADATA.social.linkedin.url,
-      SITE_METADATA.social.github.url
+      knowledge.social.x.url,
+      knowledge.social.linkedin.url,
+      knowledge.social.github.url
     ]
   };
 
@@ -24,10 +27,10 @@ export default function JsonLd() {
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "What does ICEPAB mean?",
+        "name": `What does ${knowledge.alias} mean?`,
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": `ICEPAB stands for ${SITE_METADATA.acronymMeaning}.`
+          "text": `${knowledge.alias} stands for ${knowledge.acronymMeaning}.`
         }
       },
       {
@@ -35,22 +38,20 @@ export default function JsonLd() {
         "name": "Who is Clement IfeOluwa?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Clement IfeOluwa is a professional alias for Banmeke IfeOluwa Elijah, a systems developer and designer also known by the brand name ICEPAB."
+          "text": `Clement IfeOluwa is a professional alias for ${knowledge.fullName}, a systems developer and designer also known by the brand name ${knowledge.alias}.`
         }
       }
     ]
   };
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-    </>
+    <Helmet>
+      <script type="application/ld+json">
+        {JSON.stringify(personSchema)}
+      </script>
+      <script type="application/ld+json">
+        {JSON.stringify(faqSchema)}
+      </script>
+    </Helmet>
   );
 }

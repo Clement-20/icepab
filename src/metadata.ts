@@ -11,7 +11,7 @@ export const SITE_METADATA = {
   jobTitle: "SaaS Developer & Graphic Designer",
   knowsAbout: ["Business Administration", "Explainable AI", "UI/UX", "Automation"],
   keywords: "ICEPAB, Clement IfeOluwa, Banmeke IfeOluwa Elijah, OAU Business Admin, UI/UX Nigeria, Vibe Coding",
-  ogImage: "https://icepab.name.ng/headshot.jpg", // Placeholder for professional headshot
+  ogImage: "https://icepab.name.ng/logo.png",
   allNames: ["Banmeke", "IfeOluwa", "Elijah", "Clement", "Precious", "Abayomi"],
   alias: "ICEPAB",
   acronymMeaning: "IfeOluwa, Clement, Precious, Abayomi, Banmeke",

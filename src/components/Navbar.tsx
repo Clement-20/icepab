@@ -23,13 +23,19 @@ export default function Navbar({ onTerminalClick }: NavbarProps) {
           <img 
             src="/logo.png" 
             alt="IcePab Logo" 
-            className="w-10 h-10 object-contain brightness-110 group-hover:scale-110 transition-transform duration-500"
+            className="w-10 h-10 object-contain brightness-110 group-hover:scale-110 transition-transform duration-500 hidden"
             referrerPolicy="no-referrer"
+            onLoad={(e) => {
+              (e.target as HTMLImageElement).classList.remove('hidden');
+              (e.target as HTMLImageElement).nextElementSibling?.classList.add('hidden');
+            }}
             onError={(e) => {
-              // Fallback if logo not yet uploaded
-              (e.target as HTMLImageElement).src = 'https://picsum.photos/seed/icepab/100/100';
+              (e.target as HTMLImageElement).style.display = 'none';
             }}
           />
+          <div className="w-10 h-10 border border-electric-blue/30 bg-black/50 flex items-center justify-center font-black font-mono text-electric-blue text-xs tracking-tighter">
+            IP
+          </div>
           <div className="hidden sm:flex flex-col">
             <span className="font-mono text-[10px] text-white uppercase tracking-[0.2em] font-bold leading-none">
               IcePab
