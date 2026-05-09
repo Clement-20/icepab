@@ -1,28 +1,12 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { BookOpen, Clock } from 'lucide-react';
-import { SITE_METADATA } from '../metadata';
-
-const stories = [
-  {
-    id: '1',
-    title: 'The Architecture of Personal Operating Systems',
-    excerpt: 'How we transition from static portfolios to dynamic, living digital environments. The journey of building the ICEPAB Life OS...',
-    date: 'APRIL 14, 2026',
-    author: SITE_METADATA.alias,
-    readTime: '12 MIN'
-  },
-  {
-    id: '2',
-    title: 'Decentralization and the Future of SaaS Identity',
-    excerpt: 'Exploring the intersection of cryptographic verifiable identity and the human need for authentic connection in an automated SaaS era...',
-    date: 'MARCH 22, 2026',
-    author: SITE_METADATA.fullName,
-    readTime: '15 MIN'
-  }
-];
+import { Link } from 'react-router-dom';
+import { useBlog } from '../contexts/BlogContext';
 
 export default function EditorialStories() {
+  const { stories } = useBlog();
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Blog",
@@ -78,9 +62,9 @@ export default function EditorialStories() {
               {story.excerpt}
             </p>
 
-            <button className="flex items-center gap-4 text-xs font-bold uppercase tracking-[0.5em] group-hover:gap-6 transition-all duration-300">
+            <Link to={`/stories/${story.id}`} className="flex items-center gap-4 text-xs font-bold uppercase tracking-[0.5em] group-hover:gap-6 transition-all duration-300">
               Read Chapter <div className="h-[1px] w-12 bg-electric-blue" />
-            </button>
+            </Link>
           </motion.article>
         ))}
       </div>

@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Upload, FileText, Info, Lock, CheckCircle2, X, Database, Workflow, Cpu } from 'lucide-react';
+import { Upload, FileText, Info, Lock, CheckCircle2, X, Database, Workflow, Cpu, PenTool } from 'lucide-react';
 import { useKnowledge } from '../contexts/KnowledgeContext';
+import { useBlog } from '../contexts/BlogContext';
 
 export default function UploadTerminal() {
-  const [activeTab, setActiveTab] = useState<'upload' | 'knowledge'>('knowledge');
+  const [activeTab, setActiveTab] = useState<'upload' | 'knowledge' | 'blog'>('knowledge');
   
   // Upload State
   const [file, setFile] = useState<File | null>(null);
@@ -24,6 +25,15 @@ export default function UploadTerminal() {
   });
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncStatus, setSyncStatus] = useState<'idle' | 'success'>('idle');
+
+  // Blog State
+  const { addStory } = useBlog();
+  const [blogTitle, setBlogTitle] = useState('');
+  const [blogExcerpt, setBlogExcerpt] = useState('');
+  const [blogContent, setBlogContent] = useState('');
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [publishStatus, setPublishStatus] = useState<'idle' | 'success'>('idle');
+  const isBlogLocked = !blogTitle.trim() || !blogExcerpt.trim() || !blogContent.trim();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -60,6 +70,31 @@ export default function UploadTerminal() {
     setTimeout(() => setSyncStatus('idle'), 3000);
   };
 
+  const handlePublishBlog = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isBlogLocked) return;
+
+    setIsPublishing(true);
+    
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    addStory({
+      title: blogTitle,
+      excerpt: blogExcerpt,
+      content: blogContent
+    });
+    
+    setIsPublishing(false);
+    setPublishStatus('success');
+    
+    setTimeout(() => {
+      setBlogTitle('');
+      setBlogExcerpt('');
+      setBlogContent('');
+      setPublishStatus('idle');
+    }, 3000);
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto py-12 px-6">
       <div className="bg-charcoal/40 backdrop-blur-2xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
@@ -85,6 +120,12 @@ export default function UploadTerminal() {
               className={`pb-4 text-[10px] uppercase tracking-widest font-mono flex items-center gap-2 border-b-2 transition-all ${activeTab === 'upload' ? 'border-electric-blue text-electric-blue' : 'border-transparent text-white/40 hover:text-white/80'}`}
             >
               <Workflow size={12} /> Asset Uplink
+            </button>
+            <button 
+              onClick={() => setActiveTab('blog')}
+              className={`pb-4 text-[10px] uppercase tracking-widest font-mono flex items-center gap-2 border-b-2 transition-all ${activeTab === 'blog' ? 'border-electric-blue text-electric-blue' : 'border-transparent text-white/40 hover:text-white/80'}`}
+            >
+              <PenTool size={12} /> Transmit Story
             </button>
           </div>
         </div>
@@ -159,6 +200,77 @@ export default function UploadTerminal() {
                       <><div className="w-4 h-4 border-2 border-charcoal/30 border-t-charcoal rounded-full animate-spin" /> Distributing_Knowledge...</>
                     ) : (
                       <><Cpu size={14} /> Synchronize_Knowledge_Graph</>
+                    )}
+                  </button>
+                </div>
+              </motion.form>
+            </AnimatePresence>
+          ) : activeTab === 'blog' ? (
+            <AnimatePresence mode="wait">
+              <motion.form 
+                key="blog-form"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                onSubmit={handlePublishBlog} 
+                className="space-y-8"
+              >
+                <div className="bg-electric-blue/5 border border-electric-blue/20 rounded-xl p-6 flex gap-4">
+                  <PenTool className="text-electric-blue shrink-0" />
+                  <div>
+                    <h4 className="text-xs font-bold uppercase tracking-widest text-electric-blue mb-2">Publish Editorial Node</h4>
+                    <p className="text-[10px] font-mono text-white/60 leading-relaxed uppercase tracking-wider">
+                      Distribute long-form architectural logs and transmissions.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-mono text-white/50 uppercase tracking-[0.2em] block">Transmission Title</label>
+                    <input 
+                      type="text" 
+                      value={blogTitle}
+                      onChange={(e) => setBlogTitle(e.target.value)}
+                      placeholder="e.g. Distributed Consensus in 2026"
+                      className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-sm text-white focus:outline-none focus:border-electric-blue/50 transition-all font-medium"
+                    />
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-mono text-white/50 uppercase tracking-[0.2em] block">Excerpt / Meta Description</label>
+                    <textarea 
+                      value={blogExcerpt}
+                      onChange={(e) => setBlogExcerpt(e.target.value)}
+                      placeholder="Short summary for the index feed..."
+                      className="w-full h-20 resize-none bg-black/40 border border-white/10 rounded-xl p-4 text-sm text-white focus:outline-none focus:border-electric-blue/50 transition-all font-medium"
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-mono text-white/50 uppercase tracking-[0.2em] block">Primary Payload (Markdown Supported)</label>
+                    <textarea 
+                      value={blogContent}
+                      onChange={(e) => setBlogContent(e.target.value)}
+                      placeholder="Write your transmission here... # Heading 1"
+                      className="w-full h-64 resize-none bg-black/40 border border-white/10 rounded-xl p-4 text-sm text-white font-mono focus:outline-none focus:border-electric-blue/50 transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  <button
+                    type="submit"
+                    disabled={isPublishing || isBlogLocked}
+                    className={`
+                      w-full py-6 rounded-2xl font-bold uppercase tracking-[0.4em] text-xs transition-all duration-500 flex items-center justify-center gap-4 group relative overflow-hidden
+                      ${isBlogLocked ? 'bg-red-950/20 text-red-400/50 border border-red-900/50 cursor-not-allowed' : 'bg-electric-blue text-charcoal hover:shadow-[0_0_40px_rgba(0,229,255,0.4)] cursor-pointer active:scale-[0.98]'}
+                    `}
+                  >
+                    {isPublishing ? (
+                      <><div className="w-4 h-4 border-2 border-charcoal/30 border-t-charcoal rounded-full animate-spin" /> Broadcasting...</>
+                    ) : (
+                      <><PenTool size={14} /> Distribute_Transmission</>
                     )}
                   </button>
                 </div>
@@ -280,7 +392,7 @@ export default function UploadTerminal() {
 
         {/* Global Success Overlay */}
         <AnimatePresence>
-          {(uploadStatus === 'success' || syncStatus === 'success') && (
+          {(uploadStatus === 'success' || syncStatus === 'success' || publishStatus === 'success') && (
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -291,12 +403,14 @@ export default function UploadTerminal() {
                 <CheckCircle2 className="text-electric-blue" size={40} />
               </div>
               <h4 className="text-2xl font-black uppercase tracking-tighter mb-4 text-white">
-                {uploadStatus === 'success' ? 'Uplink Confirmed' : 'Knowledge Graph Synced'}
+                {uploadStatus === 'success' ? 'Uplink Confirmed' : syncStatus === 'success' ? 'Knowledge Graph Synced' : 'Transmission Deployed'}
               </h4>
               <p className="text-text-dim text-xs font-mono uppercase tracking-widest max-w-sm leading-relaxed">
                 {uploadStatus === 'success' 
                   ? 'Asset successfully integrated into the ICEPAB global decentralised grid. SEO index updated.'
-                  : 'AEO schemas globally recompiled. All endpoints reflect dynamic JSON-LD adjustments.'}
+                  : syncStatus === 'success'
+                  ? 'AEO schemas globally recompiled. All endpoints reflect dynamic JSON-LD adjustments.'
+                  : 'Editorial node successfully compiled and distributed to the public matrix.'}
               </p>
             </motion.div>
           )}

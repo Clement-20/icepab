@@ -7,6 +7,7 @@ import SEO from './components/SEO';
 import InteractiveBackground from './components/InteractiveBackground';
 import Terminal from './components/Terminal';
 import { Home, AdminPage, AboutPage, DesignsPage, StoriesPage, SystemsPage } from './components/PageContainers';
+import SingleStoryPage from './components/SingleStoryPage';
 import { SITE_METADATA } from './metadata';
 
 const XIcon = ({ size = 24 }: { size?: number }) => (
@@ -81,6 +82,7 @@ export default function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/designs" element={<DesignsPage />} />
             <Route path="/stories" element={<StoriesPage />} />
+            <Route path="/stories/:id" element={<SingleStoryPage />} />
             <Route path="/systems" element={<SystemsPage />} />
           </Routes>
         </AnimatePresence>

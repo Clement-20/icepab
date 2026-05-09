@@ -25,7 +25,7 @@ export default function Hero() {
     }),
   };
 
-  const child = {
+  const child: any = {
     visible: {
       opacity: 1,
       x: 0,

@@ -13,7 +13,7 @@ import UploadTerminal from './UploadTerminal';
 import SEO from './SEO';
 import { SITE_METADATA } from '../metadata';
 
-const pageVariants = {
+const pageVariants: any = {
   initial: {
     opacity: 0,
     y: 10,
