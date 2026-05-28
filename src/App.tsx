@@ -5,9 +5,11 @@ import { Linkedin, Github } from 'lucide-react';
 import Navbar from './components/Navbar';
 import SEO from './components/SEO';
 import InteractiveBackground from './components/InteractiveBackground';
-import Terminal from './components/Terminal';
 import { Home, AdminPage, AboutPage, DesignsPage, StoriesPage, SystemsPage } from './components/PageContainers';
 import SingleStoryPage from './components/SingleStoryPage';
+import AdminAccessModal from './components/AdminAccessModal';
+import CyberDeck from './components/CyberDeck';
+import CyberLockGate from './components/CyberLockGate';
 import { SITE_METADATA } from './metadata';
 
 const XIcon = ({ size = 24 }: { size?: number }) => (
@@ -22,37 +24,81 @@ const XIcon = ({ size = 24 }: { size?: number }) => (
 );
 
 export default function App() {
-  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [isXrActive, setIsXrActive] = useState(false);
+  const [spatialDepth, setSpatialDepth] = useState(12);
   const [notification, setNotification] = useState<string | null>(null);
+  const [isGateUnlocked, setIsGateUnlocked] = useState(() => {
+    return sessionStorage.getItem('icepab_gate_unlocked') === 'true';
+  });
   const location = useLocation();
+
+  const handleUnlockSuccess = () => {
+    sessionStorage.setItem('icepab_gate_unlocked', 'true');
+    setIsGateUnlocked(true);
+    setNotification("WELCOME TO ICEPAB SYSTEMS");
+    setTimeout(() => setNotification(null), 5000);
+  };
+
+  const handleAdminSuccess = () => {
+    setNotification("ADMIN OVERRIDE ACCEPTED");
+    setTimeout(() => setNotification(null), 3000);
+  };
 
   React.useEffect(() => {
     const alerts = [
-      "Node 001-ALPHA optimized.",
-      "Syncing external cache...",
-      "Firewall integrity: 100%",
-      "Incoming data stream detected.",
-      "Latency stabilized at 14ms."
+      "AI State: Gemini 2.0 active.",
+      "AR Spatial coordinates updated.",
+      "Hacker console initialized.",
+      "CBT node integrity verified 100%.",
+      "Network latency: stabilized @ 12ms."
     ];
 
     const interval = setInterval(() => {
       const randomAlert = alerts[Math.floor(Math.random() * alerts.length)];
       setNotification(randomAlert);
       setTimeout(() => setNotification(null), 3000);
-    }, 25000); // Less frequent notifications
+    }, 20000); // More frequent cyberpunk alerts
 
     return () => clearInterval(interval);
   }, []);
+
+  const spatialMatrixStyle = isXrActive ? {
+    transform: `perspective(1000px) rotateX(${(spatialDepth / 4).toFixed(1)}deg) rotateY(${- (spatialDepth / 4).toFixed(1)}deg) scale(0.96)`,
+    transition: 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)',
+    boxShadow: '0 0 50px rgba(0, 229, 255, 0.08)',
+  } : {
+    transition: 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)',
+  };
 
   return (
     <main className="selection:bg-electric-blue/30 selection:text-white min-h-screen bg-charcoal relative">
       <SEO />
       
+      {/* Cyber Lock Gate screen overlay if locked */}
+      <AnimatePresence>
+        {!isGateUnlocked && (
+          <CyberLockGate onUnlock={handleUnlockSuccess} />
+        )}
+      </AnimatePresence>
+      
       {/* Interactive Cyberpunk Background */}
-      <InteractiveBackground />
+      <InteractiveBackground isXrActive={isXrActive} />
 
-      {/* Terminal Modal Interface */}
-      <Terminal isOpen={isTerminalOpen} onClose={() => setIsTerminalOpen(false)} />
+      {/* CyberDeck Hardware control panel */}
+      <CyberDeck 
+        isXrActive={isXrActive} 
+        onXrToggle={() => setIsXrActive(!isXrActive)} 
+        spatialDepth={spatialDepth} 
+        onSpatialDepthChange={setSpatialDepth} 
+      />
+
+      {/* Admin Access Modal */}
+      <AdminAccessModal 
+        isOpen={isAdminModalOpen} 
+        onClose={() => setIsAdminModalOpen(false)} 
+        onSuccess={handleAdminSuccess}
+      />
 
       {/* Real-time System Notifications */}
       <div className="fixed bottom-12 right-12 z-[90] pointer-events-none">
@@ -62,17 +108,17 @@ export default function App() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              className="bg-charcoal/80 border-l-2 border-electric-blue px-6 py-4 backdrop-blur-md shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center gap-4"
+              className={`bg-charcoal/80 border-l-2 py-4 px-6 backdrop-blur-md shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center gap-4 transition-colors duration-500 ${isXrActive ? 'border-lime-green' : 'border-electric-blue'}`}
             >
-              <div className="w-1.5 h-1.5 bg-electric-blue rounded-full animate-ping" />
+              <div className={`w-1.5 h-1.5 rounded-full animate-ping ${isXrActive ? 'bg-lime-green' : 'bg-electric-blue'}`} />
               <span className="font-mono text-[10px] text-white uppercase tracking-widest">{notification}</span>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
       
-      <div className="relative z-10">
-        <Navbar onTerminalClick={() => setIsTerminalOpen(true)} />
+      <div className="relative z-10" style={spatialMatrixStyle}>
+        <Navbar />
         
         <AnimatePresence mode="wait">
           {/* @ts-ignore - key is required for AnimatePresence but not in RoutesProps */}
@@ -141,7 +187,12 @@ export default function App() {
               <div className="flex flex-col gap-4">
                 <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-white/30">OS</span>
                 <Link to="/designs" className="text-xs text-text-dim hover:text-electric-blue transition-colors">INTERFACE_LOGS</Link>
-                <Link to="/admin" className="text-xs text-white/20 hover:text-electric-blue transition-colors font-mono uppercase tracking-widest text-[8px]">ADMIN_ACCESS</Link>
+                <button 
+                  onClick={() => setIsAdminModalOpen(true)} 
+                  className="text-left w-fit opacity-0 hover:opacity-100 transition-opacity duration-300 text-xs text-electric-blue font-mono uppercase tracking-widest text-[8px]"
+                >
+                  ADMIN_ACCESS
+                </button>
                 <Link to="/" className="text-xs text-text-dim hover:text-electric-blue transition-colors">ROOT_NODE</Link>
               </div>
             </div>

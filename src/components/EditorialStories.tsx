@@ -69,7 +69,7 @@ export default function EditorialStories() {
         ))}
       </div>
 
-      <div className="mt-40 p-12 bg-surface/30 border border-accent-border backdrop-blur-md rounded-2xl flex flex-col items-center text-center">
+      <div className="mt-40 p-12 bg-white/[0.04] border border-white/10 backdrop-blur-2xl rounded-2xl flex flex-col items-center text-center shadow-[0_12px_40px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.08)]">
         <BookOpen className="text-electric-blue w-12 h-12 mb-6" />
         <h4 className="text-2xl font-bold uppercase tracking-tight mb-4">Subscribe to the Feed</h4>
         <p className="text-text-dim max-w-md mb-8">Receive encoded transmissions regarding design systems, distributed infrastructure, and digital philosophy.</p>

@@ -55,7 +55,7 @@ export default function ProjectHub() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
               onMouseMove={handleMouseMove}
-              className={`${spanClass} group relative flex flex-col bg-white/5 border border-white/10 rounded-[2rem] overflow-hidden hover:border-white/25 transition-all duration-500`}
+              className={`${spanClass} group relative flex flex-col bg-white/[0.04] backdrop-blur-2xl border border-white/10 rounded-[2rem] overflow-hidden hover:border-white/25 hover:bg-white/[0.08] shadow-[0_12px_40px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.08)] transition-all duration-500`}
               style={
                 {
                   '--x': `${mousePos.x}px`,
@@ -68,10 +68,10 @@ export default function ProjectHub() {
                 className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none"
                 style={{ background: `radial-gradient(600px circle at var(--x) var(--y), ${project.color}, transparent 40%)` }}
               />
-
+ 
               <div className="p-8 flex flex-col h-full z-10">
                 <div className="flex items-start justify-between mb-auto">
-                  <div className="p-4 bg-white/5 border border-white/5 rounded-2xl group-hover:scale-110 group-hover:bg-white/10 transition-all duration-500">
+                  <div className="p-4 bg-white/[0.06] backdrop-blur-md border border-white/10 rounded-2xl group-hover:scale-110 group-hover:bg-white/10 transition-all duration-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
                     <IconComponent 
                       size={28} 
                       style={{ color: project.color }} 
@@ -100,6 +100,8 @@ export default function ProjectHub() {
                   </div>
                   <a 
                     href={project.url}
+                    target={project.url.startsWith('http') ? '_blank' : undefined}
+                    rel={project.url.startsWith('http') ? 'noopener noreferrer' : undefined}
                     className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-electric-blue transition-colors"
                   >
                     Open App <ArrowUpRight size={14} />
@@ -129,9 +131,9 @@ export default function ProjectHub() {
         className="mt-20 flex flex-col items-center text-center"
       >
         <div className="w-12 h-[1px] bg-electric-blue/50 mb-8" />
-        <h4 className="text-[10px] uppercase tracking-[0.6em] text-white/30 mb-4">Scalable Directory Protocol</h4>
-        <p className="text-xs text-text-dim max-w-sm">
-          System automatically synchronizes with the network manifest. New projects are encrypted and indexed on deployment.
+        <h4 className="text-[10px] uppercase tracking-[0.6em] text-white/30 mb-4">Engineering Focus</h4>
+        <p className="text-xs text-text-dim max-w-sm leading-relaxed">
+          All systems are fully engineered from the database layer to user interactions, optimized for absolute performance and security.
         </p>
       </motion.div>
     </section>

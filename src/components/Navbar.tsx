@@ -1,12 +1,8 @@
-import { Menu, Terminal } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-interface NavbarProps {
-  onTerminalClick: () => void;
-}
-
-export default function Navbar({ onTerminalClick }: NavbarProps) {
+export default function Navbar() {
   const location = useLocation();
 
   const navItems = [
@@ -17,7 +13,7 @@ export default function Navbar({ onTerminalClick }: NavbarProps) {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 h-20 px-6 md:px-12 flex items-center justify-between backdrop-blur-md border-b border-white/5 bg-charcoal/20">
+    <nav className="fixed top-0 left-0 right-0 z-50 h-20 px-6 md:px-12 flex items-center justify-between backdrop-blur-2xl border-b border-white/10 bg-black/45 shadow-[0_8px_32px_0_rgba(0,0,0,0.37),inset_0_1px_0_rgba(255,255,255,0.05)]">
       <div className="flex items-center gap-6">
         <Link to="/" className="flex items-center gap-3 group">
           <img 
@@ -33,7 +29,7 @@ export default function Navbar({ onTerminalClick }: NavbarProps) {
               (e.target as HTMLImageElement).style.display = 'none';
             }}
           />
-          <div className="w-10 h-10 border border-electric-blue/30 bg-black/50 flex items-center justify-center font-black font-mono text-electric-blue text-xs tracking-tighter">
+          <div className="w-10 h-10 border border-electric-blue/30 bg-white/5 backdrop-blur-md flex items-center justify-center font-black font-mono text-electric-blue text-xs tracking-tighter rounded-lg shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
             IP
           </div>
           <div className="hidden sm:flex flex-col">
@@ -41,7 +37,7 @@ export default function Navbar({ onTerminalClick }: NavbarProps) {
               IcePab
             </span>
             <span className="font-mono text-[8px] text-lime-green uppercase tracking-[0.2em] font-bold mt-1">
-              Life OS // ACTIVE
+              DEV & DESIGN
             </span>
           </div>
         </Link>
@@ -61,16 +57,6 @@ export default function Navbar({ onTerminalClick }: NavbarProps) {
             {item.name}
           </Link>
         ))}
-        
-        <div className="w-[1px] h-4 bg-white/10 mx-2" />
-        
-        <button 
-          onClick={onTerminalClick}
-          className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] font-bold text-electric-blue hover:text-white transition-colors group"
-        >
-          <Terminal size={14} className="group-hover:rotate-12 transition-transform" />
-          Terminal
-        </button>
       </div>
 
       <div className="flex md:hidden">

@@ -38,7 +38,7 @@ const socialLinks = [
 export default function SocialConnect() {
   return (
     <section className="py-32 px-6 flex flex-col items-center">
-      <div className="relative p-1 md:p-12 w-full max-w-5xl overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/5 backdrop-blur-2xl shadow-[0_40px_100px_rgba(0,0,0,0.4)]">
+      <div className="relative p-1 md:p-12 w-full max-w-5xl overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/[0.04] backdrop-blur-3xl shadow-[0_24px_64px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)]">
         {/* Glow Effects */}
         <div className="absolute -top-40 -left-40 w-80 h-80 bg-electric-blue/10 rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-electric-blue/10 rounded-full blur-[100px] pointer-events-none" />
@@ -60,7 +60,7 @@ export default function SocialConnect() {
                 target="_blank"
                 rel="noreferrer"
                 whileHover={{ x: 10 }}
-                className="group flex items-center justify-between p-6 bg-white/5 border border-white/5 hover:border-electric-blue/50 hover:bg-electric-blue/5 rounded-2xl transition-all duration-300"
+                className="group flex items-center justify-between p-6 bg-white/[0.04] backdrop-blur-xl border border-white/10 hover:border-electric-blue/50 hover:bg-electric-blue/5 rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.08)] transition-all duration-300"
               >
                 <div className="flex items-center gap-6">
                   <div className="p-4 bg-white/5 rounded-xl group-hover:bg-electric-blue group-hover:text-charcoal transition-colors">

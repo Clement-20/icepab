@@ -7,6 +7,8 @@ import remarkGfm from 'remark-gfm';
 import SEO from './SEO';
 import { useBlog } from '../contexts/BlogContext';
 
+import { Helmet } from 'react-helmet-async';
+
 export default function SingleStoryPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -20,6 +22,19 @@ export default function SingleStoryPage() {
 
   if (!story) return null;
 
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": story.title,
+    "description": story.excerpt,
+    "author": {
+      "@type": "Person",
+      "name": story.author
+    },
+    "datePublished": story.date,
+    "url": `https://icepab.name.ng/stories/${story.id}`
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -27,6 +42,11 @@ export default function SingleStoryPage() {
       exit={{ opacity: 0, y: -10 }}
       className="w-full pt-24 min-h-screen"
     >
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify(articleSchema)}
+        </script>
+      </Helmet>
       <SEO title={story.title} description={story.excerpt} />
       
       <div className="max-w-3xl mx-auto px-6 pt-12 pb-24">

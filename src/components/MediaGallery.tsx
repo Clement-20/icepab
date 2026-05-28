@@ -55,52 +55,39 @@ export default function MediaGallery() {
             transition={{ delay: i * 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="relative group break-inside-avoid overflow-hidden rounded-xl border border-white/5 bg-white/5"
           >
-            {/* Smart Procedural Rendering */}
+            {/* Real Image Render Container */}
             <div className="relative w-full aspect-[4/5] bg-charcoal/40 flex flex-col justify-between p-6 overflow-hidden md:aspect-[3/4]">
-              {/* Algorithmic Backdrop */}
-              <div 
-                className="absolute inset-0 opacity-[0.03] group-hover:opacity-10 transition-opacity duration-1000"
-                style={{
-                  backgroundImage: `linear-gradient(45deg, #00e5ff 25%, transparent 25%, transparent 75%, #00e5ff 75%, #00e5ff), linear-gradient(45deg, #00e5ff 25%, transparent 25%, transparent 75%, #00e5ff 75%, #00e5ff)`,
-                  backgroundSize: '20px 20px',
-                  backgroundPosition: '0 0, 10px 10px'
-                }}
+              {/* Image Element */}
+              <img 
+                src={image.url} 
+                alt={image.alt} 
+                className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700 ease-in-out"
+                referrerPolicy="no-referrer"
               />
-              
-              <div className="absolute inset-0 flex items-center justify-center opacity-10 group-hover:opacity-30 transition-opacity duration-1000 mix-blend-screen pointer-events-none">
-                <div 
-                  className="w-[120%] h-px bg-electric-blue absolute"
-                  style={{ transform: `rotate(${i * 25}deg)` }}
-                />
-                <div 
-                  className="w-[120%] h-px bg-lime-green absolute"
-                  style={{ transform: `rotate(${-(i * 15 + 45)}deg)` }}
-                />
-              </div>
+              {/* Dark overlay to ensure text is fully legible */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/50 z-0" />
 
               <div className="flex justify-end relative z-10">
-                <span className="text-[9px] font-mono border border-white/10 px-2 py-1 rounded bg-black/40 text-text-dim">
-                  NODE_{image.id}
+                <span className="text-[9px] font-mono border border-white/10 px-2 py-1 rounded bg-black/60 text-white/80">
+                  REF_{image.id}
                 </span>
               </div>
               
-              <div className="mt-auto relative z-10 transition-all duration-700 ease-in-out group-hover:translate-y-[-10px]">
+              <div className="mt-auto relative z-10 transition-all duration-500 ease-in-out group-hover:translate-y-[-10px]">
                 <span className="text-[10px] uppercase font-bold tracking-widest text-lime-green block mb-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   {image.category}
                 </span>
-                <h3 className="text-lg font-black uppercase text-white/80 group-hover:text-white leading-tight tracking-tighter">
+                <h3 className="text-lg font-black uppercase text-white leading-tight tracking-tighter">
                   {image.alt}
                 </h3>
               </div>
-
-              <img src={image.url} alt={image.alt} className="sr-only" />
             </div>
             
             {/* Glassmorphism Caption */}
             <div className="absolute inset-x-0 bottom-0 p-6 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
-              <div className="backdrop-blur-xl bg-charcoal/60 border border-white/10 p-4 rounded-lg shadow-2xl">
+              <div className="backdrop-blur-2xl bg-black/50 border border-white/10 p-4 rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.15)]">
                 <span className="text-[10px] font-mono text-electric-blue uppercase tracking-widest block mb-2">
-                  {image.category} // Sub-Layer: 0{i + 1}
+                  {image.category} // Artifact: 0{i + 1}
                 </span>
                 <p className="text-xs text-white leading-relaxed font-medium">
                   {image.caption}

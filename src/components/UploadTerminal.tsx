@@ -97,9 +97,9 @@ export default function UploadTerminal() {
 
   return (
     <div className="w-full max-w-4xl mx-auto py-12 px-6">
-      <div className="bg-charcoal/40 backdrop-blur-2xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+      <div className="bg-black/45 backdrop-blur-2xl border border-white/10 rounded-3xl overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)]">
         {/* Header & Tabs */}
-        <div className="border-b border-white/5 bg-white/5">
+        <div className="border-b border-white/10 bg-white/[0.03]">
           <div className="p-8 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 bg-electric-blue rounded-full animate-pulse" />
