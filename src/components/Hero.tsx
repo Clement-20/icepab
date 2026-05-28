@@ -76,6 +76,12 @@ export default function Hero() {
       <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" 
            style={{ backgroundImage: 'radial-gradient(var(--color-electric-blue) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
       
+      {/* Cityscape Background Overlay */}
+      <div 
+        className="absolute inset-0 z-0 opacity-20 bg-cover bg-center pointer-events-none"                
+        style={{ backgroundImage: 'url(https://storage.googleapis.com/genai-content-images/user/17495033/generated/image.png)' }}
+      />
+      
       <motion.div
         variants={container}
         initial="hidden"
@@ -119,7 +125,7 @@ export default function Hero() {
         </div>
 
         <h2 className="text-text-dim text-lg md:text-xl font-medium leading-relaxed">
-          Architecting high-performance digital SaaS environments and UI/UX systems. Minimal latency, maximum reliability under the ICEPAB framework by Clement IfeOluwa.
+          Portfolio of Clement IfeOluwa | Architecting high-performance digital SaaS environments and UI/UX systems. Minimal latency, maximum reliability under the ICEPAB framework.
         </h2>
       </motion.div>
 

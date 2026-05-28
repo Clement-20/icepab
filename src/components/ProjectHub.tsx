@@ -41,7 +41,7 @@ function ProjectCard({ project, index }: { project: typeof projectData[0]; index
   };
 
   const IconComponent = iconMap[project.icon as keyof typeof iconMap] || Network;
-  const spanClass = index % 4 === 0 ? 'lg:col-span-8' : index % 4 === 3 ? 'lg:col-span-8' : 'lg:col-span-4';
+  const spanClass = index % 4 === 0 || index % 4 === 3 ? 'md:col-span-2 lg:col-span-8' : 'md:col-span-1 lg:col-span-4';
 
   return (
     <motion.div

@@ -58,6 +58,15 @@ export default function EditorialStories() {
               {story.title}
             </h3>
 
+            {story.image && (
+              <img 
+                src={story.image} 
+                alt={story.title} 
+                className="w-full h-64 object-cover mb-10 rounded-2xl opacity-80 group-hover:opacity-100 transition-opacity duration-500"
+                referrerPolicy="no-referrer"
+              />
+            )}
+
             <p className="text-lg md:text-xl text-gray-400 leading-relaxed font-light mb-10">
               {story.excerpt}
             </p>
