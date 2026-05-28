@@ -2,5 +2,5 @@
   "name": "IcePab Life OS",
   "description": "Personal operating system for IcePab - Designs, Stories, and Systems.",
   "requestFramePermissions": [],
-  "majorCapabilities": []
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

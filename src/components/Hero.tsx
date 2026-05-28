@@ -3,9 +3,15 @@ import React, { useState, useEffect } from 'react';
 
 export default function Hero() {
   const [bootSequence, setBootSequence] = useState(0);
+  const [agentName, setAgentName] = useState('GUEST');
   const letters = "ICEPAB SYSTEMS".split("");
 
   useEffect(() => {
+    const name = sessionStorage.getItem('icepab_agent_name');
+    if (name) {
+      setAgentName(name.toUpperCase());
+    }
+
     const sequence = [
       { delay: 400, action: () => setBootSequence(1) },
       { delay: 800, action: () => setBootSequence(2) },
@@ -104,8 +110,14 @@ export default function Hero() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 2, duration: 1 }}
-        className="mt-6 text-center max-w-xl"
+        className="mt-6 text-center max-w-xl flex flex-col items-center gap-4"
       >
+        {/* Glowing Custom Hologram Greet Header */}
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-lime-green/20 bg-lime-green/5 font-mono text-[9px] text-lime-green uppercase tracking-[0.2em] shadow-[0_4px_24px_rgba(128,255,0,0.04),inset_0_1px_0_rgba(255,255,255,0.05)] animate-pulse">
+          <span className="w-1.5 h-1.5 rounded-full bg-lime-green animate-ping" />
+          SYSTEMS_ONLINE // WELCOME, AGENT {agentName}
+        </div>
+
         <h2 className="text-text-dim text-lg md:text-xl font-medium leading-relaxed">
           Architecting high-performance digital SaaS environments and UI/UX systems. Minimal latency, maximum reliability under the ICEPAB framework by Clement IfeOluwa.
         </h2>

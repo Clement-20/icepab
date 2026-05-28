@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ShieldAlert, KeyRound, Radio, Cpu, Terminal, ArrowRight, EyeOff } from 'lucide-react';
 
 interface CyberLockGateProps {
-  onUnlock: () => void;
+  onUnlock: (name: string) => void;
 }
 
 export default function CyberLockGate({ onUnlock }: CyberLockGateProps) {
@@ -11,20 +11,26 @@ export default function CyberLockGate({ onUnlock }: CyberLockGateProps) {
   const [unlockState, setUnlockState] = useState<'locked' | 'decrypting' | 'granted'>('locked');
   const [terminalLogs, setTerminalLogs] = useState<string[]>([]);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
+  const [inputName, setInputName] = useState('');
 
-  const hackLines = [
-    "INITIALIZING COGNITIVE INTERACTION BYPASS...",
-    "HANDSHAKE PROTOCOL: STATUS OK",
-    "QUERYING RETINAL VECTOR DECRYPTION...",
-    "CONNECTING TO OBALEMI AWOLOWO UNIVERSITY CBT GATEWAY...",
-    "SECURITY SANDBOX CORRUPTED // COGNITIVE OVERRIDE INITIATED",
-    "DECRYPTING AES-256 ENCRYPTED ICEPAB DIRECTORY...",
-    "SYSTEM CHANNELS RE-ROUTE COMPLETED",
-    "CORPUS NODE VERIFICATION: GENUINE",
-    "COMPILING DESIGN ARTIFICAL TRANSLATIONS...",
-    "BYPASSING LOCAL DECK PROTOCOLS...",
-    "CORE ACCESS: GRANTED // REDIRECTING STREAM..."
-  ];
+  const getDecryptLines = (name: string) => {
+    const alias = name.trim() ? name.toUpperCase() : "SECURE_GUEST";
+    return [
+      `INITIALIZING COGNITIVE INTERACTION BYPASS FOR ${alias}...`,
+      `HANDSHAKE PROTOCOL REGISTERED TO: [${alias}] // STATUS OK`,
+      "QUERYING RETINAL VECTOR DECRYPTION...",
+      "CONNECTING TO OBAFEMI AWOLOWO UNIVERSITY CBT ONLINE SECTOR...",
+      "SECURITY SANDBOX COMPROMISED // INTRODUCING COGNITIVE OVERRIDE",
+      `DECRYPTING AES-256 FILES FOR AGENT [${alias}]...`,
+      "SYSTEM CHANNELS RE-ROUTE COMPLETED",
+      `CORPUS NODE VERIFICATION REGISTERED: [${alias}_KEY]`,
+      "COMPILING SYSTEM BIOGRAPHICS & RESUME ENGINES...",
+      "BYPASSING LOCAL DECK PROTOCOLS COMPLETED",
+      `CORE ACCESS: GRANTED // REDIRECTING STREAM TO AGENT [${alias}]`
+    ];
+  };
+
+  const hackLines = getDecryptLines(inputName);
 
   // Binary Matrix Rain
   useEffect(() => {
@@ -112,14 +118,14 @@ export default function CyberLockGate({ onUnlock }: CyberLockGateProps) {
           setUnlockState('granted');
           // Complete unlock callback
           setTimeout(() => {
-            onUnlock();
+            onUnlock(inputName.trim() || 'GUEST');
           }, 1400);
         }, 600);
       }
     }, 180); // Fast line printing
 
     return () => clearInterval(interval);
-  }, [unlockState, currentLineIndex]);
+  }, [unlockState, currentLineIndex, hackLines, inputName, onUnlock]);
 
   const handleStartDecryption = () => {
     setUnlockState('decrypting');
@@ -178,6 +184,28 @@ export default function CyberLockGate({ onUnlock }: CyberLockGateProps) {
                 </div>
               </div>
 
+              {/* Cognitive Agent Name Input Field */}
+              <div className="w-full space-y-3 text-left">
+                <label className="text-[9px] font-bold text-[#00FF41]/80 uppercase tracking-[0.2em] block">
+                  Identify Yourself (Register Agent Moniker):
+                </label>
+                <div className="relative flex items-center bg-black/75 border border-[#00FF41]/30 rounded-xl px-4 py-3 focus-within:border-[#00FF41] focus-within:shadow-[0_0_15px_rgba(0,255,65,0.15)] transition-all">
+                  <span className="text-[#00FF41] font-semibold mr-2 font-mono">agent://</span>
+                  <input
+                    type="text"
+                    value={inputName}
+                    onChange={(e) => setInputName(e.target.value.replace(/[^a-zA-Z0-9\s-_]/g, '').slice(0, 16))}
+                    placeholder="ENTER AGENT NAME..."
+                    className="w-full bg-transparent border-none outline-none text-white font-mono text-sm placeholder:text-[#00FF41]/20 uppercase focus:ring-0"
+                    maxLength={16}
+                  />
+                  <div className="w-2 h-2 rounded-full bg-[#00FF41] animate-pulse ml-2" />
+                </div>
+                <p className="text-[8px] text-white/40 uppercase tracking-widest">
+                  * Empty inputs will fallback as GUEST mode.
+                </p>
+              </div>
+
               {/* Action Decrypt button */}
               <motion.button
                 whileHover={{ scale: 1.03, boxShadow: '0 0 25px rgba(0,255,65,0.4)' }}
@@ -186,7 +214,7 @@ export default function CyberLockGate({ onUnlock }: CyberLockGateProps) {
                 className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-[#00FF41] hover:bg-[#80FF00] text-black font-black uppercase tracking-[0.25em] text-xs rounded-xl shadow-[0_0_15px_rgba(0,255,65,0.2)] transition-colors"
                 id="click-to-continue-btn"
               >
-                CLICK TO CONTINUE
+                {inputName.trim() ? `AUTHORIZE AS ${inputName.trim().toUpperCase()}` : 'CLICK TO CONTINUE'}
                 <ArrowRight size={14} className="animate-pulse" />
               </motion.button>
 
@@ -280,8 +308,9 @@ export default function CyberLockGate({ onUnlock }: CyberLockGateProps) {
                   ACCESS GRANTED
                 </motion.h2>
                 <p className="text-white/70 text-[10px] uppercase tracking-[0.2em] font-semibold animate-pulse">
-                  WELCOME TO ICEPAB SYSTEMS
+                  WELCOMEBACK, AGENT {inputName.trim() ? inputName.trim().toUpperCase() : 'GUEST'}
                 </p>
+                <span className="text-[9px] text-white/40 block tracking-widest uppercase mt-1">STREAM SECURED ENGINES ON DECK</span>
               </div>
 
               <div className="w-48 h-[1px] bg-[#00FF41]/30 mx-auto animate-pulse" />

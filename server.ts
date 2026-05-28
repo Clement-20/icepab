@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import nodemailer from "nodemailer";
+import { GoogleGenAI } from "@google/genai";
 
 interface RecoveryToken {
   otp: string;
@@ -10,6 +11,25 @@ interface RecoveryToken {
 }
 
 let recoveryStore: RecoveryToken | null = null;
+let _ai: any = null;
+
+function getGeminiClient() {
+  if (!_ai) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY environment variable is not configured. Setup API key in Settings > Secrets to unleash active AI.");
+    }
+    _ai = new GoogleGenAI({
+      apiKey: apiKey,
+      httpOptions: {
+        headers: {
+          'User-Agent': 'aistudio-build',
+        }
+      }
+    });
+  }
+  return _ai;
+}
 
 async function startServer() {
   const app = express();
@@ -117,6 +137,76 @@ async function startServer() {
       }
     } catch (error: any) {
       res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  // API Route: Low-latency streaming Gemini intelligence & image analysis
+  app.post("/api/gemini/stream", async (req, res) => {
+    try {
+      const { prompt, image } = req.body;
+      if (!prompt) {
+        return res.status(400).json({ success: false, error: "Prompt is required" });
+      }
+
+      let aiClient;
+      try {
+        aiClient = getGeminiClient();
+      } catch (keyError: any) {
+        return res.status(401).json({ success: false, error: keyError.message });
+      }
+
+      // Configure SSE Headers for instant continuous data delivery
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+      res.setHeader('X-Accel-Buffering', 'no'); // prevents intermediate buffering for lowest latency
+
+      const parts: any[] = [];
+
+      // Add high-resolution base64 image part if supplied for multi-modal analysis
+      if (image) {
+        const matches = image.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+);base64,(.+)$/);
+        if (matches && matches.length === 3) {
+          const mimeType = matches[1];
+          const base64Data = matches[2];
+          parts.push({
+            inlineData: {
+              data: base64Data,
+              mimeType: mimeType
+            }
+          });
+        }
+      }
+
+      // Add standard text query prompt
+      parts.push({ text: prompt });
+
+      // Run streaming content generation with the multi-modal 'gemini-3.5-flash'
+      const responseStream = await aiClient.models.generateContentStream({
+        model: "gemini-3.5-flash",
+        contents: { parts: parts },
+        config: {
+          systemInstruction: "You are Clems' IcePab Digital AI assistant, a sleek holographic intelligence embedded directly within Clement IfeOluwa's digital workspace portfolio. Keep responses concise, high-tech, actionable, engaging, and in line with our secure retro cyber-theme."
+        }
+      });
+
+      for await (const chunk of responseStream) {
+        const text = chunk.text;
+        if (text) {
+          res.write(`data: ${JSON.stringify({ text })}\n\n`);
+        }
+      }
+
+      res.write("data: [DONE]\n\n");
+      res.end();
+    } catch (error: any) {
+      console.error("[GEMINI_STREAM_ERROR]", error);
+      if (!res.headersSent) {
+        res.status(500).json({ success: false, error: error.message });
+      } else {
+        res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
+        res.end();
+      }
     }
   });
 

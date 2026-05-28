@@ -33,10 +33,11 @@ export default function App() {
   });
   const location = useLocation();
 
-  const handleUnlockSuccess = () => {
+  const handleUnlockSuccess = (name: string) => {
     sessionStorage.setItem('icepab_gate_unlocked', 'true');
+    sessionStorage.setItem('icepab_agent_name', name.trim().toUpperCase() || 'GUEST');
     setIsGateUnlocked(true);
-    setNotification("WELCOME TO ICEPAB SYSTEMS");
+    setNotification(`WELCOME, AGENT ${name.trim().toUpperCase() || 'GUEST'}`);
     setTimeout(() => setNotification(null), 5000);
   };
 
@@ -137,21 +138,32 @@ export default function App() {
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-12">
             <div>
               <div className="flex items-center gap-4 mb-6">
-                <img 
-                  src="/logo.png" 
-                  alt="IcePab Logo" 
-                  className="w-12 h-12 object-contain brightness-110 hidden"
-                  referrerPolicy="no-referrer"
-                  onLoad={(e) => {
-                    (e.target as HTMLImageElement).classList.remove('hidden');
-                    (e.target as HTMLImageElement).nextElementSibling?.classList.add('hidden');
-                  }}
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
-                />
-                <div className="w-12 h-12 border border-lime-green/30 bg-black/50 flex items-center justify-center font-black font-mono text-lime-green text-sm tracking-tighter">
-                  IP
+                <div className="relative w-12 h-12 flex items-center justify-center group/footer">
+                  {/* Spinning interactive technological orbits around the footer logo */}
+                  <div className="absolute inset-[-4px] border border-lime-green/30 rounded-lg group-hover/footer:rotate-45 transition-transform duration-700 animate-[spin_16s_linear_infinite] pointer-events-none" />
+                  <div className="absolute inset-[-4px] border border-dashed border-electric-blue/20 rounded-lg group-hover/footer:-rotate-90 transition-transform duration-700 pointer-events-none" />
+                  
+                  {/* Soft background glow */}
+                  <div className="absolute inset-0 rounded-lg bg-lime-green/10 blur-sm opacity-50 group-hover/footer:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+                  <img 
+                    src="/logo.png" 
+                    alt="IcePab Logo" 
+                    className="relative z-10 w-full h-full object-contain brightness-110 group-hover/footer:scale-110 transition-transform duration-500 rounded-lg"
+                    onError={(e) => {
+                      const img = e.currentTarget;
+                      img.style.display = 'none';
+                      const fallback = img.nextElementSibling as HTMLElement;
+                      if (fallback) {
+                        fallback.classList.remove('hidden');
+                        fallback.classList.add('flex');
+                      }
+                    }}
+                  />
+                  {/* Fallback elegant vectors logo */}
+                  <div className="hidden absolute inset-0 z-10 border border-lime-green/30 bg-black/60 backdrop-blur-md items-center justify-center font-black font-mono text-lime-green text-sm tracking-tighter rounded-lg">
+                    IP
+                  </div>
                 </div>
                 <div>
                   <span className="font-bold tracking-[0.3em] text-sm uppercase block leading-none">IcePab Life OS</span>

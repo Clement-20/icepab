@@ -35,19 +35,25 @@ export default function InteractiveBackground({ isXrActive = false }: Interactiv
       speedX: number;
       speedY: number;
       opacity: number;
+      isSpark: boolean;
 
-      constructor() {
-        this.x = Math.random() * canvas!.width;
-        this.y = Math.random() * canvas!.height;
-        this.size = Math.random() * 2;
-        this.speedX = (Math.random() - 0.5) * 0.5;
-        this.speedY = (Math.random() - 0.5) * 0.5;
-        this.opacity = Math.random() * 0.5;
+      constructor(x?: number, y?: number, isSpark = false) {
+        this.x = x !== undefined ? x : Math.random() * canvas!.width;
+        this.y = y !== undefined ? y : Math.random() * canvas!.height;
+        this.size = isSpark ? Math.random() * 3.5 + 1.5 : Math.random() * 2;
+        this.speedX = isSpark ? (Math.random() - 0.5) * 5 : (Math.random() - 0.5) * 0.5;
+        this.speedY = isSpark ? (Math.random() - 0.5) * 5 : (Math.random() - 0.5) * 0.5;
+        this.opacity = isSpark ? Math.random() * 0.8 + 0.2 : Math.random() * 0.5;
+        this.isSpark = isSpark;
       }
 
       update() {
         this.x += this.speedX;
         this.y += this.speedY;
+
+        if (this.isSpark) {
+          this.opacity -= 0.015; // Fade out click sparks quickly
+        }
 
         if (this.x > canvas!.width) this.x = 0;
         else if (this.x < 0) this.x = canvas!.width;
@@ -76,6 +82,14 @@ export default function InteractiveBackground({ isXrActive = false }: Interactiv
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
+      // Clean up dead click sparks
+      particles = particles.filter(p => p.opacity > 0);
+      
+      // Top up base particles
+      while (particles.filter(p => !p.isSpark).length < 50) {
+        particles.push(new Particle());
+      }
+
       particles.forEach(p => {
         p.update();
         p.draw();
@@ -173,15 +187,24 @@ export default function InteractiveBackground({ isXrActive = false }: Interactiv
       animationFrameId = requestAnimationFrame(animate);
     };
 
+    const handleWindowClick = (e: MouseEvent) => {
+      // Spawn 15 high-velocity click particles
+      for (let i = 0; i < 15; i++) {
+        particles.push(new Particle(e.clientX, e.clientY, true));
+      }
+    };
+
     init();
     animate();
 
     const handleResize = () => init();
     window.addEventListener('resize', handleResize);
+    window.addEventListener('click', handleWindowClick);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('click', handleWindowClick);
     };
   }, [mouse, isXrActive]);
 
