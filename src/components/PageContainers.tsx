@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { ShieldCheck, Cpu, Code2, Database } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Hero from './Hero';
 import DesignGallery from './DesignGallery';
 import EditorialStories from './EditorialStories';
@@ -250,6 +251,28 @@ export function SystemsPage() {
             </div>
           </div>
         </div>
+      </div>
+    </PageWrapper>
+  );
+}
+
+export function NotFoundPage() {
+  return (
+    <PageWrapper>
+      <div className="pt-24 min-h-screen flex flex-col items-center justify-center text-center px-6">
+        <span className="text-red-500 font-mono text-xs uppercase tracking-[0.4em] mb-4 block">Error // 404</span>
+        <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.8] mb-6 text-white text-center">
+          Node Not Found
+        </h1>
+        <p className="text-text-dim text-lg max-w-md mx-auto mb-10 leading-relaxed font-light uppercase tracking-wider text-xs">
+          The requested system node coordinate does not exist on the ICEPAB digital workspace matrix.
+        </p>
+        <Link 
+          to="/" 
+          className="px-6 py-3 bg-white/5 border border-white/10 hover:border-lime-green/50 text-white font-mono text-[10px] uppercase tracking-widest rounded-xl transition-all duration-300"
+        >
+          Return to Root Node
+        </Link>
       </div>
     </PageWrapper>
   );

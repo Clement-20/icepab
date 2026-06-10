@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://icepab.name.ng/sitemap.xml

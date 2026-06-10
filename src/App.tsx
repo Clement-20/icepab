@@ -5,7 +5,7 @@ import { Linkedin, Github } from 'lucide-react';
 import Navbar from './components/Navbar';
 import SEO from './components/SEO';
 import InteractiveBackground from './components/InteractiveBackground';
-import { Home, AdminPage, AboutPage, DesignsPage, StoriesPage, SystemsPage } from './components/PageContainers';
+import { Home, AdminPage, AboutPage, DesignsPage, StoriesPage, SystemsPage, NotFoundPage } from './components/PageContainers';
 import SingleStoryPage from './components/SingleStoryPage';
 import AdminAccessModal from './components/AdminAccessModal';
 import CyberDeck from './components/CyberDeck';
@@ -131,6 +131,7 @@ export default function App() {
             <Route path="/stories" element={<StoriesPage />} />
             <Route path="/stories/:id" element={<SingleStoryPage />} />
             <Route path="/systems" element={<SystemsPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </AnimatePresence>
         
