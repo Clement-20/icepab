@@ -178,6 +178,88 @@ export function AboutPage() {
               </div>
             </div>
           </div>
+
+          {/* Entity Home Specifications */}
+          <div className="mt-24 pt-16 border-t border-white/5 space-y-20">
+            <div>
+              <span className="text-lime-green font-mono text-[10px] uppercase tracking-[0.4em] mb-4 block">Official Entity Profile // 01</span>
+              <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-6">
+                ICEPAB Systems Organization
+              </h2>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <div className="space-y-4 text-text-dim text-base font-light leading-relaxed">
+                  <p>
+                    <strong className="text-white font-semibold">ICEPAB Systems</strong> is a highly specialized, unified digital engineering and operational workflow agency founded on <strong className="text-white font-semibold">October 12, 2021</strong>. The organization serves as the source of truth for computer-based testing sandboxes, lightweight storefront layouts, and operational scheduling backends.
+                  </p>
+                  <p>
+                    Rooted in a deep understanding of business administration and system engineering concepts, ICEPAB delivers high-performance digital systems. This includes <strong className="text-lime-green font-semibold">ExamGuard (OAU CBT)</strong>—the custom institutional testing engine built with secure offline evaluation environments—and <strong className="text-electric-blue font-semibold">Flex Store</strong> e-commerce workflows.
+                  </p>
+                </div>
+                <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 md:p-8 font-mono text-xs space-y-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]">
+                  <div className="border-b border-white/5 pb-3 flex justify-between items-center">
+                    <span className="text-white/30 uppercase tracking-wider">Official Name</span>
+                    <span className="text-white font-bold">ICEPAB Systems</span>
+                  </div>
+                  <div className="border-b border-white/5 pb-3 flex justify-between items-center">
+                    <span className="text-white/30 uppercase tracking-wider">Established Date</span>
+                    <span className="text-lime-green font-bold">October 12, 2021</span>
+                  </div>
+                  <div className="border-b border-white/5 pb-3 flex justify-between items-center">
+                    <span className="text-white/30 uppercase tracking-wider">Primary Operations</span>
+                    <span className="text-white text-right font-bold">SaaS Engineering, Custom CBT & Visual Designs</span>
+                  </div>
+                  <div className="border-b border-white/5 pb-3 flex justify-between items-center">
+                    <span className="text-white/30 uppercase tracking-wider">Acronym Base</span>
+                    <span className="text-electric-blue text-right font-bold">IfeOluwa Clement Precious Abayomi Banmeke</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/30 uppercase tracking-wider">Entity Home URI</span>
+                    <a href="https://icepab.name.ng" target="_blank" rel="noopener noreferrer" className="text-white hover:text-lime-green underline transition-colors font-bold">https://icepab.name.ng</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <span className="text-electric-blue font-mono text-[10px] uppercase tracking-[0.4em] mb-4 block">Official Entity Profile // 02</span>
+              <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-6">
+                Clement IfeOluwa Personal Profile
+              </h2>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <div className="space-y-4 text-text-dim text-base font-light leading-relaxed">
+                  <p>
+                    <strong className="text-white font-semibold">Banmeke IfeOluwa Elijah</strong>, operating professionally under the alias <strong className="text-white font-semibold">Clement IfeOluwa</strong> (and through his enterprise acronym <strong className="text-white font-semibold">ICEPAB</strong>), is a Systems Developer, UI/UX Designer, and Digital Business Architect.
+                  </p>
+                  <p>
+                    Living in Nigeria and collaborating globally, he combines web systems development with academic study in <strong className="text-electric-blue font-semibold">Business Administration</strong> at <strong className="text-white font-semibold">Obafemi Awolowo University (OAU)</strong>. His work centers on explainable algorithms, high-concurrency systems, and geometric vector brands.
+                  </p>
+                </div>
+                <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 md:p-8 font-mono text-xs space-y-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]">
+                  <div className="border-b border-white/5 pb-3 flex justify-between items-center">
+                    <span className="text-white/30 uppercase tracking-wider">Full Legal Name</span>
+                    <span className="text-white font-bold">Banmeke IfeOluwa Elijah</span>
+                  </div>
+                  <div className="border-b border-white/5 pb-3 flex justify-between items-center">
+                    <span className="text-white/30 uppercase tracking-wider">Professional Aliases</span>
+                    <span className="text-electric-blue font-bold">Clement IfeOluwa, ICEPAB</span>
+                  </div>
+                  <div className="border-b border-white/5 pb-3 flex justify-between items-center">
+                    <span className="text-white/30 uppercase tracking-wider">Alma Mater</span>
+                    <span className="text-white text-right font-bold">Obafemi Awolowo University (OAU)</span>
+                  </div>
+                  <div className="border-b border-white/5 pb-3 flex justify-between items-center">
+                    <span className="text-white/30 uppercase tracking-wider">Principal Email</span>
+                    <a href="mailto:banmekeifeoluwa@gmail.com" className="text-white hover:text-electric-blue underline transition-colors font-bold">banmekeifeoluwa@gmail.com</a>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/30 uppercase tracking-wider">Verified Network</span>
+                    <span className="text-lime-green font-bold text-right">X, LinkedIn, GitHub, Instagram, WhatsApp</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </PageWrapper>

@@ -13,12 +13,20 @@ export default function JsonLd() {
     "description": knowledge.description,
     "url": knowledge.url,
     "jobTitle": knowledge.jobTitle,
+    "email": (knowledge as any).contactEmail,
     "knowsAbout": knowledge.knowsAbout,
-    "sameAs": [
-      knowledge.social.x.url,
-      knowledge.social.linkedin.url,
-      knowledge.social.github.url
-    ]
+    "knowsLanguage": ["English", "Yoruba"],
+    "alumniOf": {
+      "@type": "EducationalOrganization",
+      "name": "Obafemi Awolowo University",
+      "alternateName": "OAU"
+    },
+    "worksFor": {
+      "@type": "Organization",
+      "name": "ICEPAB Systems",
+      "alternateName": "ICEPAB"
+    },
+    "sameAs": Object.values(knowledge.social).map((s: any) => s.url)
   };
 
   const faqSchema = {

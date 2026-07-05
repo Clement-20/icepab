@@ -24,14 +24,22 @@ export default function SEO({
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "ICEPAB Systems",
+    "alternateName": knowledge.alias,
     "url": knowledge.url,
     "logo": `${knowledge.url}/logo.png`,
     "description": activeDescription,
-    "sameAs": [
-      knowledge.social.x.url,
-      knowledge.social.linkedin.url,
-      knowledge.social.github.url
-    ]
+    "foundingDate": (knowledge as any).foundingDate,
+    "founder": {
+      "@type": "Person",
+      "name": knowledge.fullName,
+      "alternateName": knowledge.alternateNames
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": (knowledge as any).contactEmail,
+      "contactType": "technical support"
+    },
+    "sameAs": Object.values(knowledge.social).map((s: any) => s.url)
   };
 
   const finalTitle = activeTitle.includes('|') ? activeTitle : `${activeTitle} | ${knowledge.alias}`;

@@ -29,5 +29,15 @@ export const SITE_METADATA = {
       handle: "Clement-20",
       url: "https://github.com/Clement-20",
     },
+    instagram: {
+      handle: "icepab",
+      url: "https://instagram.com/icepab",
+    },
+    whatsapp: {
+      handle: "ICEPAB Community",
+      url: "https://chat.whatsapp.com/invite/ICEPAB",
+    },
   },
+  foundingDate: "2021-10-12",
+  contactEmail: "banmekeifeoluwa@gmail.com",
 };
