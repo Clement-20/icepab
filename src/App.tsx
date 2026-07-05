@@ -7,6 +7,7 @@ import SEO from './components/SEO';
 import InteractiveBackground from './components/InteractiveBackground';
 import { Home, AdminPage, AboutPage, DesignsPage, StoriesPage, SystemsPage, NotFoundPage } from './components/PageContainers';
 import SingleStoryPage from './components/SingleStoryPage';
+import SingleDesignPage from './components/SingleDesignPage';
 import AdminAccessModal from './components/AdminAccessModal';
 import CyberDeck from './components/CyberDeck';
 import CyberLockGate from './components/CyberLockGate';
@@ -128,6 +129,7 @@ export default function App() {
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/designs" element={<DesignsPage />} />
+            <Route path="/designs/:id" element={<SingleDesignPage />} />
             <Route path="/stories" element={<StoriesPage />} />
             <Route path="/stories/:id" element={<SingleStoryPage />} />
             <Route path="/systems" element={<SystemsPage />} />

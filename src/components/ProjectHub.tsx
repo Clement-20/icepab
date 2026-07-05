@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ShoppingCart, GraduationCap, Network, Users, ArrowUpRight, CheckCircle2, Clock } from 'lucide-react';
 import { projectData } from '../data/projects';
@@ -17,6 +18,7 @@ const statusColors = {
 };
 
 function ProjectCard({ project, index }: { project: typeof projectData[0]; index: number }) {
+  const navigate = useNavigate();
   const [mousePos, setMousePos] = React.useState({ x: 0, y: 0 });
   const [isConnecting, setIsConnecting] = React.useState(false);
 
@@ -34,10 +36,8 @@ function ProjectCard({ project, index }: { project: typeof projectData[0]; index
     setIsConnecting(true);
     setTimeout(() => {
       setIsConnecting(false);
-      if (project.url.startsWith('http')) {
-        window.open(project.url, '_blank', 'noreferrer');
-      }
-    }, 1200);
+      navigate(`/designs/${project.id}`);
+    }, 800);
   };
 
   const IconComponent = iconMap[project.icon as keyof typeof iconMap] || Network;

@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import nodemailer from "nodemailer";
 import { GoogleGenAI } from "@google/genai";
@@ -29,6 +30,104 @@ function getGeminiClient() {
     });
   }
   return _ai;
+}
+
+function getSEOMetadata(requestPath: string) {
+  const defaultTitle = "Banmeke IfeOluwa Elijah (ICEPAB) | Systems Developer & Designer";
+  const defaultDesc = "Official digital home of Clement IfeOluwa (ICEPAB). High-end SaaS development, graphic design, and distributed systems.";
+
+  const routes: Record<string, { title: string; desc: string }> = {
+    "/": {
+      title: defaultTitle,
+      desc: defaultDesc
+    },
+    "/about": {
+      title: "About Banmeke IfeOluwa Elijah (ICEPAB) | Systems Developer",
+      desc: "Professional bio, studies, and systems architecture approach of Clement IfeOluwa, founder of ICEPAB Systems."
+    },
+    "/designs": {
+      title: "Design Artifacts & Interface Gallery | ICEPAB",
+      desc: "Explore high-fidelity interface design, vector branding, and interactive prototypes built by ICEPAB."
+    },
+    "/stories": {
+      title: "Editorial Transmissions & Tech Blog | ICEPAB",
+      desc: "Insightful articles about OAU CBT formats, distributed databases, operational automation, and UX systems."
+    },
+    "/systems": {
+      title: "Enterprise Infrastructure & Workflow Automation | ICEPAB",
+      desc: "Highly scalable, isolated sandbox environments, concurrency optimizations, and business operational portals."
+    },
+    "/designs/oau-cbt": {
+      title: "ExamGuard (OAU CBT) | Custom Testing Engine",
+      desc: "High-concurrency, secure computer-based testing environment engineered for scale and evaluation integrity."
+    },
+    "/designs/flex-store": {
+      title: "Flex Store | Modern Web Storefront & Asset Delivery",
+      desc: "High-speed, lightweight e-commerce storefront architectures optimized for instant digital asset downloads."
+    },
+    "/designs/ice-net": {
+      title: "Ice-Net Workflow | Distributed Process Automation",
+      desc: "Engineered backend integrations, cron schedulers, and admin dashboards designed to streamline daily operational workflows."
+    },
+    "/designs/sync-lab": {
+      title: "Sync Lab Systems | High-Fidelity UI/UX Prototypes",
+      desc: "Bespoke corporate visual identity systems and interactive prototypes with geometric custom animations."
+    },
+    "/stories/1": {
+      title: "What is the OAU Post-UTME format? | Editorial Transmission",
+      desc: "Quick facts, eligibility requirements, examination format, and tips for success for the OAU Post-UTME screening test."
+    },
+    "/stories/2": {
+      title: "The Architecture of Personal Operating Systems | Editorial Transmission",
+      desc: "Transitioning from static portfolios to dynamic, living digital environments like the ICEPAB Life OS."
+    },
+    "/stories/3": {
+      title: "Decentralization and the Future of SaaS Identity | Editorial Transmission",
+      desc: "Exploring the intersection of cryptographic verifiable identity and authentic human connections in SaaS."
+    }
+  };
+
+  const normalizedPath = requestPath.replace(/\/$/, ""); // strip trailing slash
+  const match = routes[normalizedPath || "/"];
+  if (match) return match;
+
+  return { title: defaultTitle, desc: defaultDesc };
+}
+
+function injectSEOTags(html: string, requestPath: string): string {
+  const meta = getSEOMetadata(requestPath);
+
+  let modified = html.replace(
+    /<title>.*?<\/title>/gi,
+    `<title>${meta.title}</title>`
+  );
+
+  modified = modified.replace(
+    /<meta name="description" content=".*?" \/>/gi,
+    `<meta name="description" content="${meta.desc}" />`
+  );
+
+  modified = modified.replace(
+    /<meta property="og:title" content=".*?" \/>/gi,
+    `<meta property="og:title" content="${meta.title}" />`
+  );
+
+  modified = modified.replace(
+    /<meta property="og:description" content=".*?" \/>/gi,
+    `<meta property="og:description" content="${meta.desc}" />`
+  );
+
+  modified = modified.replace(
+    /<meta name="twitter:title" content=".*?" \/>/gi,
+    `<meta name="twitter:title" content="${meta.title}" />`
+  );
+
+  modified = modified.replace(
+    /<meta name="twitter:description" content=".*?" \/>/gi,
+    `<meta name="twitter:description" content="${meta.desc}" />`
+  );
+
+  return modified;
 }
 
 async function startServer() {
@@ -219,9 +318,18 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
+    app.use(express.static(distPath, { index: false }));
+    app.get("*", async (req, res) => {
+      try {
+        const indexPath = path.join(distPath, "index.html");
+        const html = await fs.promises.readFile(indexPath, "utf-8");
+        const modifiedHtml = injectSEOTags(html, req.path);
+        res.setHeader("Content-Type", "text/html");
+        res.send(modifiedHtml);
+      } catch (err: any) {
+        console.error("Error serving index.html with dynamic SEO:", err);
+        res.status(500).send("Internal Server Error");
+      }
     });
   }
 

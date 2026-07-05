@@ -25,7 +25,7 @@ export const projectData: ProjectApp[] = [
     color: '#00E5FF',
   },
   {
-    id: 'saas-automation',
+    id: 'ice-net',
     name: 'Workflow Automation',
     tagline: 'Custom SaaS & Business Operations',
     description: 'Engineered backend integrations, cron schedulers, and admin dashboards designed to streamline daily operational workflows for growing digital enterprises.',
@@ -37,7 +37,7 @@ export const projectData: ProjectApp[] = [
     color: '#00FF41',
   },
   {
-    id: 'graphic-systems',
+    id: 'sync-lab',
     name: 'Brand Systems & Prototyping',
     tagline: 'Visual Architecture & Creative UI/UX',
     description: 'Bespoke corporate visual identity systems, vector asset prints, and interactive high-fidelity user interface prototypes built with a pixel-perfect ethos.',
@@ -49,7 +49,7 @@ export const projectData: ProjectApp[] = [
     color: '#FF00E5',
   },
   {
-    id: 'digital-stores',
+    id: 'flex-store',
     name: 'Modern Web Storefronts',
     tagline: 'Digital Asset Delivery',
     description: 'High-speed, lightweight e-commerce storefront architectures optimized for fast load times and instant digital asset downloads.',
