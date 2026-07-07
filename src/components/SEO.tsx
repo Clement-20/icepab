@@ -58,6 +58,9 @@ export default function SEO({
         <meta name="description" content={activeDescription} />
         <meta name="keywords" content={knowledge.keywords} />
         <meta name="author" content={knowledge.author} />
+        <link rel="canonical" href={knowledge.url} />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta name="googlebot" content="index, follow" />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />

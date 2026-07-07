@@ -48,6 +48,38 @@ export default function JsonLd() {
           "@type": "Answer",
           "text": `Clement IfeOluwa is a professional alias for ${knowledge.fullName}, a systems developer and designer also known by the brand name ${knowledge.alias}.`
         }
+      },
+      {
+        "@type": "Question",
+        "name": `Who is ${knowledge.fullName}?`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": `${knowledge.fullName} is a Systems Developer, UI/UX Designer, and Digital Business Architect based in Nigeria. He is the founder of ICEPAB Systems and studied Business Administration at Obafemi Awolowo University (OAU).`
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is ExamGuard (OAU CBT)?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "ExamGuard is a high-security, custom computer-based testing engine engineered for Obafemi Awolowo University (OAU) CBT exams. It secures student candidate environments, prevents keyboard modifier bypasses, and maintains high-concurrency throughput under massive parallel workloads."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How to contact Clement IfeOluwa (ICEPAB)?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": `You can contact Clement IfeOluwa via email at ${knowledge.contactEmail} or securely through his official WhatsApp link at ${knowledge.social.whatsapp.url} or phone number ${knowledge.social.whatsapp.handle}.`
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is ICEPAB Systems?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "ICEPAB Systems is a specialized agency founded by Banmeke IfeOluwa Elijah on October 12, 2021. It delivers custom high-performance digital systems, SaaS engineering solutions, custom computer-based testing sandboxes, storefront engines, and operational webhook routers."
+        }
       }
     ]
   };

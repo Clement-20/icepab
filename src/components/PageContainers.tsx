@@ -53,6 +53,10 @@ const PageWrapper = ({ children }: { children: React.ReactNode }) => (
 export function Home() {
   return (
     <PageWrapper>
+      <SEO 
+        title="Banmeke IfeOluwa Elijah (ICEPAB) | High-Performance SaaS Architect"
+        description="The official workspace of Clement IfeOluwa (ICEPAB) - specializing in secure computer-based testing (ExamGuard OAU CBT), SaaS development, graphic design, and 'Glass Box' business automation."
+      />
       <Hero />
       <ProjectHub />
       <MediaGallery />
@@ -72,6 +76,10 @@ export function Home() {
 export function AdminPage() {
   return (
     <PageWrapper>
+      <SEO 
+        title="Secure Operator Admin Substrate | ICEPAB Systems"
+        description="Encrypted administrative command center and secure file upload interface for the ICEPAB digital workspace."
+      />
       <div className="pt-24 min-h-screen">
         <div className="px-6 max-w-4xl mx-auto pt-12 pb-8 text-center">
           <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.8] mb-4">Core Substrate Admin</h1>
@@ -86,6 +94,10 @@ export function AdminPage() {
 export function DesignsPage() {
   return (
     <PageWrapper>
+      <SEO 
+        title="UI/UX Interactive Galleries & Brand Identity Systems | ICEPAB"
+        description="Browse through the custom graphic systems, interactive user interface prototypes, and corporate layouts crafted with pixel-perfect design concepts by Clement IfeOluwa."
+      />
       <div className="pt-24 min-h-screen">
         <div className="px-6 max-w-7xl mx-auto pt-12 pb-8">
           <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.8] mb-4">Design Artifacts</h1>
@@ -100,6 +112,10 @@ export function DesignsPage() {
 export function StoriesPage() {
   return (
     <PageWrapper>
+      <SEO 
+        title="Editorial Transmissions & Business Automation Blog | ICEPAB"
+        description="In-depth developer logs, UI/UX design articles, and system architecture essays documenting professional digital automation frameworks."
+      />
       <div className="pt-24 min-h-screen">
         <div className="px-6 max-w-4xl mx-auto pt-12 pb-8 text-center">
           <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.8] mb-4">Editorial Feed</h1>
@@ -251,6 +267,10 @@ export function AboutPage() {
                     <span className="text-white/30 uppercase tracking-wider">Principal Email</span>
                     <a href="mailto:banmekeifeoluwa@gmail.com" className="text-white hover:text-electric-blue underline transition-colors font-bold">banmekeifeoluwa@gmail.com</a>
                   </div>
+                  <div className="border-b border-white/5 pb-3 flex justify-between items-center">
+                    <span className="text-white/30 uppercase tracking-wider">WhatsApp Link</span>
+                    <a href={SITE_METADATA.social.whatsapp.url} target="_blank" rel="noopener noreferrer" className="text-lime-green hover:text-electric-blue underline transition-colors font-bold">09127813092</a>
+                  </div>
                   <div className="flex justify-between items-center">
                     <span className="text-white/30 uppercase tracking-wider">Verified Network</span>
                     <span className="text-lime-green font-bold text-right">X, LinkedIn, GitHub, Instagram, WhatsApp</span>
@@ -269,6 +289,10 @@ export function AboutPage() {
 export function SystemsPage() {
   return (
     <PageWrapper>
+      <SEO 
+        title="Enterprise Systems Engineering & Concurrency Blueprints | ICEPAB"
+        description="Explore high-concurrency systems, isolated test sandboxing (ExamGuard OAU CBT), and custom API webhook routers built with a modern TypeScript stack."
+      />
       <div className="pt-24 min-h-screen">
         <div className="px-6 max-w-7xl mx-auto pt-12 pb-8">
           <span className="text-electric-blue font-mono text-xs uppercase tracking-[0.4em] mb-4 block">Engine / Systems</span>
@@ -341,6 +365,10 @@ export function SystemsPage() {
 export function NotFoundPage() {
   return (
     <PageWrapper>
+      <SEO 
+        title="404 Node Not Found | ICEPAB Systems"
+        description="The requested coordinate does not exist on the ICEPAB digital workspace matrix. Please return to the home screen."
+      />
       <div className="pt-24 min-h-screen flex flex-col items-center justify-center text-center px-6">
         <span className="text-red-500 font-mono text-xs uppercase tracking-[0.4em] mb-4 block">Error // 404</span>
         <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.8] mb-6 text-white text-center">

@@ -24,6 +24,17 @@ const XIcon = ({ size = 24 }: { size?: number }) => (
   </svg>
 );
 
+const WhatsAppIcon = ({ size = 24 }: { size?: number }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="currentColor"
+  >
+    <path d="M12.012 2C6.485 2 2 6.484 2 12.011c0 1.767.46 3.428 1.262 4.887L2 22l5.244-1.374A9.972 9.972 0 0 0 12.012 22c5.528 0 10.013-4.485 10.013-10.011C22.025 6.486 17.54 2 12.012 2zm6.275 14.195c-.258.73-1.493 1.32-2.072 1.4-1.127.155-2.585-.262-4.81-1.181-3.791-1.57-6.233-5.419-6.423-5.672-.19-.253-1.404-1.867-1.404-3.56 0-1.694.887-2.53 1.205-2.88.258-.282.68-.426.963-.426.284 0 .567.01.815.02.26.01.603-.1.942.716.353.856 1.205 2.94 1.31 3.153.105.213.175.462.035.742-.14.28-.31.606-.61.947-.194.218-.396.447-.168.835.228.388.948 1.558 2.033 2.525 1.396 1.246 2.572 1.632 2.998 1.81.425.178.68.148.932-.14.254-.288 1.095-1.272 1.39-1.705.297-.432.593-.36.997-.212.404.148 2.564 1.208 3.003 1.428.438.22.73.33.836.51.106.182.106.1.152 1.27z" />
+  </svg>
+);
+
 export default function App() {
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [isXrActive, setIsXrActive] = useState(false);
@@ -191,6 +202,9 @@ export default function App() {
                   </a>
                   <a href={SITE_METADATA.social.github.url} target="_blank" rel="noreferrer" title={`GitHub: ${SITE_METADATA.social.github.handle}`} className="text-text-dim hover:text-electric-blue transition-colors">
                     <Github size={18} />
+                  </a>
+                  <a href={SITE_METADATA.social.whatsapp.url} target="_blank" rel="noreferrer" title={`WhatsApp: ${SITE_METADATA.social.whatsapp.handle}`} className="text-text-dim hover:text-electric-blue transition-colors">
+                    <WhatsAppIcon size={18} />
                   </a>
                 </div>
               </div>

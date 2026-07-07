@@ -34,8 +34,8 @@ export const SITE_METADATA = {
       url: "https://instagram.com/icepab",
     },
     whatsapp: {
-      handle: "ICEPAB Community",
-      url: "https://chat.whatsapp.com/invite/ICEPAB",
+      handle: "09127813092",
+      url: "https://wa.me/2349127813092",
     },
   },
   foundingDate: "2021-10-12",
