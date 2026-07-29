@@ -9,6 +9,7 @@ export interface ProjectApp {
   category: 'Utility' | 'Market' | 'Social' | 'Infrastructure';
   features: string[];
   color: string;
+  price?: string;
 }
 
 export const projectData: ProjectApp[] = [
@@ -23,6 +24,7 @@ export const projectData: ProjectApp[] = [
     category: 'Utility',
     features: ['Secure Sandbox', 'Automated Grading', 'Integrity Protocols'],
     color: '#00E5FF',
+    price: '$450',
   },
   {
     id: 'ice-net',
@@ -35,6 +37,7 @@ export const projectData: ProjectApp[] = [
     category: 'Infrastructure',
     features: ['API Integrations', 'Automated Schedulers', 'Admin Consoles'],
     color: '#00FF41',
+    price: '$200',
   },
   {
     id: 'sync-lab',
@@ -47,6 +50,7 @@ export const projectData: ProjectApp[] = [
     category: 'Social',
     features: ['Figma Prototyping', 'Brand Identity', 'Vector Illustration'],
     color: '#FF00E5',
+    price: '$150',
   },
   {
     id: 'flex-store',
@@ -59,5 +63,6 @@ export const projectData: ProjectApp[] = [
     category: 'Market',
     features: ['Fast Performance', 'Responsive Checkout', 'Secure Delivery'],
     color: '#FFD700',
+    price: '$300',
   },
 ];

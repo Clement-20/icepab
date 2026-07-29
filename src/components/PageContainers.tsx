@@ -39,7 +39,7 @@ const pageVariants: any = {
   },
 };
 
-const PageWrapper = ({ children }: { children: React.ReactNode }) => (
+export const PageWrapper = ({ children }: { children: React.ReactNode }) => (
   <motion.div
     variants={pageVariants}
     initial="initial"

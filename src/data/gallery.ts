@@ -6,6 +6,7 @@ export interface GalleryImage {
   width: number;
   height: number;
   category: string;
+  price?: string;
 }
 
 export const galleryData: GalleryImage[] = [
@@ -17,6 +18,7 @@ export const galleryData: GalleryImage[] = [
     width: 1200,
     height: 800,
     category: 'Systems',
+    price: '$50',
   },
   {
     id: '2',
@@ -26,6 +28,7 @@ export const galleryData: GalleryImage[] = [
     width: 800,
     height: 1200,
     category: 'Architecture',
+    price: '$75',
   },
   {
     id: '3',
@@ -35,6 +38,7 @@ export const galleryData: GalleryImage[] = [
     width: 1200,
     height: 1200,
     category: 'Security',
+    price: '$100',
   },
   {
     id: '4',
@@ -44,6 +48,7 @@ export const galleryData: GalleryImage[] = [
     width: 1000,
     height: 1500,
     category: 'Infrastructure',
+    price: '$200',
   },
   {
     id: '5',
@@ -53,6 +58,7 @@ export const galleryData: GalleryImage[] = [
     width: 1400,
     height: 900,
     category: 'Analytics',
+    price: '$80',
   },
   {
     id: '6',
@@ -62,5 +68,6 @@ export const galleryData: GalleryImage[] = [
     width: 1200,
     height: 800,
     category: 'Hardware',
+    price: '$120',
   },
 ];

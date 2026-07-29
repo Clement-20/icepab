@@ -59,10 +59,15 @@ function DecodedLetter({ letter, delay, index, className, glowColor = "rgba(0,22
         filter: "blur(1px)",
         y: -1,
       }}
-      transition={{ 
+      transition={isSolid ? { 
         type: "spring", 
         stiffness: 180, 
-        damping: 14,
+        damping: 14 
+      } : { 
+        duration: 1, 
+        repeat: Infinity, 
+        repeatType: "reverse", 
+        ease: "easeInOut" 
       }}
       className={`inline-block font-black select-none ${className} ${isSolid ? '' : 'font-mono text-electric-blue/80'}`}
     >
