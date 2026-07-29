@@ -309,6 +309,21 @@ async function startServer() {
     }
   });
 
+  // API Route: Create business tracking sheet
+  app.post("/api/sheets/create", async (req, res) => {
+    try {
+      const { authClient } = req.body; // In production this would be handled via session/OAuth flow
+      if (!authClient) return res.status(401).json({ error: "Auth client missing" });
+      
+      const { createBusinessTrackingSheet } = await import('./src/lib/sheets');
+      const spreadsheetId = await createBusinessTrackingSheet(authClient);
+      res.json({ success: true, spreadsheetId });
+    } catch (error: any) {
+      console.error("[SHEETS_ERROR]", error);
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
   // Vite integration as middleware context
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

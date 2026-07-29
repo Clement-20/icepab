@@ -30,6 +30,7 @@ export default function Navbar() {
 
   const navItems = [
     { name: 'Portfolio', path: '/portfolio' },
+    { name: 'Reviews', path: '/reviews' },
     { name: 'Designs', path: '/designs' },
     { name: 'Stories', path: '/stories' },
     { name: 'Systems', path: '/systems' },

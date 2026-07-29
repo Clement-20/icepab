@@ -13,6 +13,7 @@ import CyberDeck from './components/CyberDeck';
 import CyberLockGate from './components/CyberLockGate';
 import PortfolioPage from './pages/PortfolioPage';
 import AdminDashboard from './pages/AdminDashboard';
+import ReviewsPage from './pages/ReviewsPage';
 import { SITE_METADATA } from './metadata';
 
 const XIcon = ({ size = 24 }: { size?: number }) => (
@@ -142,6 +143,7 @@ export default function App() {
             <Route path="/portfolio" element={<PortfolioPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/reviews" element={<ReviewsPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/designs" element={<DesignsPage />} />
             <Route path="/designs/:id" element={<SingleDesignPage />} />
