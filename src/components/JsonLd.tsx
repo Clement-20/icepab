@@ -26,7 +26,7 @@ export default function JsonLd() {
       "name": "ICEPAB Systems",
       "alternateName": "ICEPAB"
     },
-    "sameAs": Object.values(knowledge.social).map((s: any) => s.url)
+    "sameAs": Object.values(knowledge.social || {}).map((s: any) => s?.url).filter(Boolean)
   };
 
   const faqSchema = {
@@ -70,7 +70,7 @@ export default function JsonLd() {
         "name": "How to contact Clement IfeOluwa (ICEPAB)?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": `You can contact Clement IfeOluwa via email at ${knowledge.contactEmail} or securely through his official WhatsApp link at ${knowledge.social.whatsapp.url} or phone number ${knowledge.social.whatsapp.handle}.`
+          "text": `You can contact Clement IfeOluwa via email at ${knowledge.contactEmail} or securely through his official WhatsApp link at ${knowledge.social?.whatsapp?.url || '#'} or phone number ${knowledge.social?.whatsapp?.handle || 'N/A'}.`
         }
       },
       {

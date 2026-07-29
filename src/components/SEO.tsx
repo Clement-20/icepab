@@ -39,7 +39,7 @@ export default function SEO({
       "email": (knowledge as any).contactEmail,
       "contactType": "technical support"
     },
-    "sameAs": Object.values(knowledge.social).map((s: any) => s.url)
+    "sameAs": Object.values(knowledge.social || {}).map((s: any) => s?.url).filter(Boolean)
   };
 
   const finalTitle = activeTitle.includes('|') ? activeTitle : `${activeTitle} | ${knowledge.alias}`;

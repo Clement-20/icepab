@@ -203,7 +203,7 @@ export default function App() {
                   <a href={SITE_METADATA.social.github.url} target="_blank" rel="noreferrer" title={`GitHub: ${SITE_METADATA.social.github.handle}`} className="text-text-dim hover:text-electric-blue transition-colors">
                     <Github size={18} />
                   </a>
-                  <a href={SITE_METADATA.social.whatsapp.url} target="_blank" rel="noreferrer" title={`WhatsApp: ${SITE_METADATA.social.whatsapp.handle}`} className="text-text-dim hover:text-electric-blue transition-colors">
+                  <a href={SITE_METADATA?.social?.whatsapp?.url ?? '#'} target="_blank" rel="noreferrer" title={`WhatsApp: ${SITE_METADATA?.social?.whatsapp?.handle ?? 'WhatsApp'}`} className="text-text-dim hover:text-electric-blue transition-colors">
                     <WhatsAppIcon size={18} />
                   </a>
                 </div>

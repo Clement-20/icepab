@@ -10,6 +10,7 @@ import MediaGallery from './MediaGallery';
 import WikipediaGallery from './WikipediaGallery';
 import UploadTerminal from './UploadTerminal';
 import SEO from './SEO';
+import ReadingProgressBar from './ReadingProgressBar';
 import { SITE_METADATA } from '../metadata';
 
 const pageVariants: any = {
@@ -112,6 +113,7 @@ export function DesignsPage() {
 export function StoriesPage() {
   return (
     <PageWrapper>
+      <ReadingProgressBar />
       <SEO 
         title="Editorial Transmissions & Business Automation Blog | ICEPAB"
         description="In-depth developer logs, UI/UX design articles, and system architecture essays documenting professional digital automation frameworks."
@@ -269,7 +271,7 @@ export function AboutPage() {
                   </div>
                   <div className="border-b border-white/5 pb-3 flex justify-between items-center">
                     <span className="text-white/30 uppercase tracking-wider">WhatsApp Link</span>
-                    <a href={SITE_METADATA.social.whatsapp.url} target="_blank" rel="noopener noreferrer" className="text-lime-green hover:text-electric-blue underline transition-colors font-bold">09127813092</a>
+                    <a href={SITE_METADATA?.social?.whatsapp?.url ?? '#'} target="_blank" rel="noopener noreferrer" className="text-lime-green hover:text-electric-blue underline transition-colors font-bold">09127813092</a>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-white/30 uppercase tracking-wider">Verified Network</span>
@@ -289,6 +291,7 @@ export function AboutPage() {
 export function SystemsPage() {
   return (
     <PageWrapper>
+      <ReadingProgressBar />
       <SEO 
         title="Enterprise Systems Engineering & Concurrency Blueprints | ICEPAB"
         description="Explore high-concurrency systems, isolated test sandboxing (ExamGuard OAU CBT), and custom API webhook routers built with a modern TypeScript stack."

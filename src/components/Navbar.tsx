@@ -2,6 +2,7 @@ import { Menu, X } from 'lucide-react';
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
+import { SITE_METADATA } from '../metadata';
 
 export default function Navbar() {
   const location = useLocation();
@@ -98,6 +99,15 @@ export default function Navbar() {
             <span className="uppercase text-[8px] tracking-[0.1em] font-bold">MONITOR:</span>
             <span className="text-lime-green font-black uppercase text-[9px] tracking-widest">{activeAgent}</span>
           </div>
+          
+          <a
+            href={SITE_METADATA?.social?.whatsapp?.url ?? '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 bg-lime-green text-black text-[10px] font-black uppercase tracking-[0.2em] rounded-full hover:scale-105 transition-transform"
+          >
+            Book Now
+          </a>
         </div>
 
         <div className="flex md:hidden">
@@ -151,6 +161,16 @@ export default function Navbar() {
                 transition={{ delay: 0.25 }}
                 className="pt-6 border-t border-white/5 flex flex-col gap-4"
               >
+                {/* Book Now Mobile Button */}
+                <a
+                  href={SITE_METADATA?.social?.whatsapp?.url ?? '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-4 bg-lime-green text-black text-sm font-black uppercase tracking-[0.25em] text-center rounded-full hover:bg-white transition-colors"
+                >
+                  Book Now
+                </a>
+
                 {/* Mobile Monitor Badge */}
                 <div className="inline-flex self-start items-center gap-2 px-3.5 py-2 bg-white/[0.03] border border-white/10 rounded-full font-mono text-[9px] text-white/40 tracking-wider">
                   <div className="w-1.5 h-1.5 rounded-full bg-lime-green animate-pulse" />
