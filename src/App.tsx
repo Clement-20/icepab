@@ -14,6 +14,7 @@ import CyberLockGate from './components/CyberLockGate';
 import PortfolioPage from './pages/PortfolioPage';
 import AdminDashboard from './pages/AdminDashboard';
 import ReviewsPage from './pages/ReviewsPage';
+import AutomationsPage from './pages/AutomationsPage';
 import { SITE_METADATA } from './metadata';
 
 const XIcon = ({ size = 24 }: { size?: number }) => (
@@ -141,6 +142,7 @@ export default function App() {
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<Home />} />
             <Route path="/portfolio" element={<PortfolioPage />} />
+            <Route path="/automations" element={<AutomationsPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/reviews" element={<ReviewsPage />} />

@@ -16,7 +16,7 @@ export default function WorkShowcase() {
     type: 'Website' as const,
     description: p.description,
     link: p.url,
-    image: '', // Needs a thumbnail if available
+    image: p.image || '',
     category: 'Websites' as Category,
     price: p.price
   }));

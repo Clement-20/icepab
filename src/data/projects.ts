@@ -10,6 +10,7 @@ export interface ProjectApp {
   features: string[];
   color: string;
   price?: string;
+  image?: string;
 }
 
 export const projectData: ProjectApp[] = [
@@ -25,6 +26,7 @@ export const projectData: ProjectApp[] = [
     features: ['Secure Sandbox', 'Automated Grading', 'Integrity Protocols'],
     color: '#00E5FF',
     price: '$450',
+    image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=600&auto=format&fit=crop',
   },
   {
     id: 'ice-net',
@@ -38,6 +40,7 @@ export const projectData: ProjectApp[] = [
     features: ['API Integrations', 'Automated Schedulers', 'Admin Consoles'],
     color: '#00FF41',
     price: '$200',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop',
   },
   {
     id: 'sync-lab',
@@ -51,6 +54,7 @@ export const projectData: ProjectApp[] = [
     features: ['Figma Prototyping', 'Brand Identity', 'Vector Illustration'],
     color: '#FF00E5',
     price: '$150',
+    image: 'https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=600&auto=format&fit=crop',
   },
   {
     id: 'flex-store',
@@ -64,5 +68,6 @@ export const projectData: ProjectApp[] = [
     features: ['Fast Performance', 'Responsive Checkout', 'Secure Delivery'],
     color: '#FFD700',
     price: '$300',
+    image: 'https://images.unsplash.com/photo-1557821552-17105176677c?q=80&w=600&auto=format&fit=crop',
   },
 ];
