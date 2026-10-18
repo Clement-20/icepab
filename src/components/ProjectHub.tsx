@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ShoppingCart, GraduationCap, Network, Users, ArrowUpRight, CheckCircle2, Clock } from 'lucide-react';
+import { ShoppingCart, GraduationCap, Network, Users, ArrowUpRight, CheckCircle2, Clock, Globe } from 'lucide-react';
 import { projectData } from '../data/projects';
+import LivePreviewModal from './LivePreviewModal';
 
 const iconMap = {
   Market: ShoppingCart,
@@ -17,10 +18,10 @@ const statusColors = {
   'in-dev': 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20',
 };
 
-function ProjectCard({ project, index }: { project: typeof projectData[0]; index: number }) {
+function ProjectCard({ project, index, onPreview }: { project: typeof projectData[0]; index: number; onPreview: (p: typeof projectData[0]) => void }) {
   const navigate = useNavigate();
-  const [mousePos, setMousePos] = React.useState({ x: 0, y: 0 });
-  const [isConnecting, setIsConnecting] = React.useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isConnecting, setIsConnecting] = useState(false);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -31,8 +32,7 @@ function ProjectCard({ project, index }: { project: typeof projectData[0]; index
   };
 
   const handleCardClick = (e: React.MouseEvent) => {
-    // Prevent double triggers if clicking on an interactive link inside the card
-    if ((e.target as HTMLElement).closest('a')) return;
+    if ((e.target as HTMLElement).closest('a') || (e.target as HTMLElement).closest('button')) return;
     setIsConnecting(true);
     setTimeout(() => {
       setIsConnecting(false);
@@ -59,18 +59,39 @@ function ProjectCard({ project, index }: { project: typeof projectData[0]; index
         } as React.CSSProperties
       }
     >
-      {/* Individual spotlight glow that tracks the pointer flawlessly */}
+      {/* Individual spotlight glow */}
       <div 
         className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none"
         style={{ background: `radial-gradient(350px circle at var(--x) var(--y), ${project.color}, transparent 45%)` }}
       />
       
-      {/* Laser connecting overlay simulating system access */}
       {isConnecting && (
         <div className="absolute inset-0 bg-black/90 z-20 flex flex-col items-center justify-center font-mono p-4 text-[10px] space-y-2 animate-[flicker_0.15s_ease-out]">
           <div className="w-1.5 h-1.5 rounded-full bg-lime-green animate-ping" />
           <span className="text-lime-green tracking-[0.2em] font-bold uppercase animate-pulse">ESTABLISHING COGNITIVE INTERACTIVE PROTOCOL...</span>
           <span className="text-white/40 text-[8px] tracking-wide font-mono">NODE_ROUTE: {project.url.split('/').pop() || 'ROOT'}</span>
+        </div>
+      )}
+
+      {/* Project Thumbnail Preview Banner */}
+      {project.image && (
+        <div className="w-full h-48 overflow-hidden relative border-b border-white/10 bg-black/40">
+          <img 
+            src={project.image} 
+            alt={project.name} 
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c] via-transparent to-transparent opacity-80" />
+          
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onPreview(project);
+            }}
+            className="absolute top-3 right-3 px-3 py-1.5 bg-black/70 backdrop-blur-md border border-white/20 rounded-xl text-[10px] font-mono text-white uppercase tracking-wider flex items-center gap-1.5 hover:bg-electric-blue hover:text-black hover:border-electric-blue transition-all"
+          >
+            <Globe size={12} /> Live Preview
+          </button>
         </div>
       )}
 
@@ -103,62 +124,71 @@ function ProjectCard({ project, index }: { project: typeof projectData[0]; index
               <span key={feature} className="text-[9px] font-mono text-white/30 uppercase tracking-widest">{feature}</span>
             ))}
           </div>
-          <a 
-            href={project.url}
-            target={project.url.startsWith('http') ? '_blank' : undefined}
-            rel={project.url.startsWith('http') ? 'noopener noreferrer' : undefined}
-            className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-electric-blue transition-colors"
-          >
-            Open App <ArrowUpRight size={14} />
-          </a>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onPreview(project);
+              }}
+              className="text-xs font-bold uppercase tracking-widest text-electric-blue hover:underline flex items-center gap-1"
+            >
+              Preview <Globe size={12} />
+            </button>
+            <a 
+              href={project.url}
+              target={project.url.startsWith('http') ? '_blank' : undefined}
+              rel={project.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+              className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-electric-blue transition-colors"
+            >
+              Open <ArrowUpRight size={14} />
+            </a>
+          </div>
         </div>
       </div>
-
-      {/* Decorative Progress bar for "In Dev / Beta" */}
-      {project.status !== 'live' && (
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/5">
-          <motion.div 
-            initial={{ width: 0 }}
-            whileInView={{ width: project.status === 'beta' ? '75%' : '35%' }}
-            className="h-full"
-            style={{ backgroundColor: project.color }}
-          />
-        </div>
-      )}
     </motion.div>
   );
 }
 
 export default function ProjectHub() {
+  const [previewProject, setPreviewProject] = useState<typeof projectData[0] | null>(null);
+
   return (
-    <section className="py-24 px-6 max-w-7xl mx-auto" aria-label="ICEPAB SaaS Ecosystem Directory">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-        <div>
-          <span className="text-electric-blue font-mono text-xs uppercase tracking-[0.4em] mb-4 block">Central Hub / Ecosystem</span>
-          <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.8]">ICEPAB Software Directory</h2>
+    <>
+      <section className="py-24 px-6 max-w-7xl mx-auto" aria-label="ICEPAB SaaS Ecosystem Directory">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+          <div>
+            <span className="text-electric-blue font-mono text-xs uppercase tracking-[0.4em] mb-4 block">Central Hub / Ecosystem</span>
+            <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.8]">ICEPAB Software Directory</h2>
+          </div>
+          <p className="max-w-md text-text-dim text-lg leading-relaxed md:mb-1">
+            Explore the SaaS projects and platforms built within the ICEPAB network by Clement IfeOluwa. Each node in this directory represents a modular solution targeting UI/UX and process automation.
+          </p>
         </div>
-        <p className="max-w-md text-text-dim text-lg leading-relaxed md:mb-1">
-          Explore the SaaS projects and platforms built within the ICEPAB network by Clement IfeOluwa. Each node in this directory represents a modular solution targeting UI/UX and process automation.
-        </p>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 auto-rows-[280px] gap-6">
-        {projectData.map((project, i) => (
-          <ProjectCard key={project.id} project={project} index={i} />
-        ))}
-      </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 auto-rows-[auto] gap-6">
+          {projectData.map((project, i) => (
+            <ProjectCard key={project.id} project={project} index={i} onPreview={setPreviewProject} />
+          ))}
+        </div>
 
-      <motion.div 
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        className="mt-20 flex flex-col items-center text-center"
-      >
-        <div className="w-12 h-[1px] bg-electric-blue/50 mb-8" />
-        <h4 className="text-[10px] uppercase tracking-[0.6em] text-white/30 mb-4">Engineering Focus</h4>
-        <p className="text-xs text-text-dim max-w-sm leading-relaxed">
-          All systems are fully engineered from the database layer to user interactions, optimized for absolute performance and security.
-        </p>
-      </motion.div>
-    </section>
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          className="mt-20 flex flex-col items-center text-center"
+        >
+          <div className="w-12 h-[1px] bg-electric-blue/50 mb-8" />
+          <h4 className="text-[10px] uppercase tracking-[0.6em] text-white/30 mb-4">Engineering Focus</h4>
+          <p className="text-xs text-text-dim max-w-sm leading-relaxed">
+            All systems are fully engineered from the database layer to user interactions, optimized for absolute performance and security.
+          </p>
+        </motion.div>
+      </section>
+
+      <LivePreviewModal 
+        isOpen={!!previewProject} 
+        onClose={() => setPreviewProject(null)} 
+        project={previewProject} 
+      />
+    </>
   );
 }

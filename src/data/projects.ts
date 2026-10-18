@@ -15,6 +15,20 @@ export interface ProjectApp {
 
 export const projectData: ProjectApp[] = [
   {
+    id: 'anon-note',
+    name: 'AnonNote',
+    tagline: 'Secure Anonymous Messaging & Notes',
+    description: 'A lightning-fast, secure anonymous note-taking and messaging web application designed for private thoughts, feedback collection, and encrypted sharing.',
+    icon: 'Social',
+    url: 'https://anonote-three.vercel.app',
+    status: 'live',
+    category: 'Social',
+    features: ['Encrypted Storage', 'Instant Sharing', 'Zero-Trace Mode'],
+    color: '#9C27B0',
+    price: 'Free',
+    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&auto=format&fit=crop',
+  },
+  {
     id: 'oau-cbt',
     name: 'ExamGuard (OAU CBT)',
     tagline: 'Secure Custom Testing Engine',
@@ -58,11 +72,11 @@ export const projectData: ProjectApp[] = [
   },
   {
     id: 'flex-store',
-    name: 'Modern Web Storefronts',
-    tagline: 'Digital Asset Delivery',
+    name: 'FlexStore',
+    tagline: 'Digital Asset Delivery Storefront',
     description: 'High-speed, lightweight e-commerce storefront architectures optimized for fast load times and instant digital asset downloads.',
     icon: 'Market',
-    url: '#',
+    url: 'https://flexstore.icepab.name.ng',
     status: 'live',
     category: 'Market',
     features: ['Fast Performance', 'Responsive Checkout', 'Secure Delivery'],

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Github, Linkedin, ArrowUpRight } from 'lucide-react';
+import { Github, Linkedin, ArrowUpRight, Instagram } from 'lucide-react';
 import { SITE_METADATA } from '../metadata';
 
 const XIcon = ({ size = 24 }: { size?: number }) => (
@@ -32,6 +32,12 @@ const socialLinks = [
     icon: Github, 
     url: SITE_METADATA.social.github.url, 
     handle: SITE_METADATA.social.github.handle 
+  },
+  { 
+    name: 'Instagram', 
+    icon: Instagram, 
+    url: SITE_METADATA.social.instagram.url, 
+    handle: `@${SITE_METADATA.social.instagram.handle}` 
   },
 ];
 

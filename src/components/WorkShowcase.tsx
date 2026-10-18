@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ExternalLink, Layers, Network } from 'lucide-react';
+import { ExternalLink, Layers, Network, Globe } from 'lucide-react';
 import { projectData } from '../data/projects';
 import { galleryData } from '../data/gallery';
 import { SITE_METADATA } from '../metadata';
+import LivePreviewModal from './LivePreviewModal';
 
 type Category = 'All' | 'Websites' | 'Designs';
 
 export default function WorkShowcase() {
   const [activeCategory, setActiveCategory] = useState<Category>('All');
+  const [previewItem, setPreviewItem] = useState<any>(null);
 
   const websites = projectData.map(p => ({
     id: p.id,
@@ -38,68 +40,91 @@ export default function WorkShowcase() {
     : allItems.filter(item => item.category === activeCategory);
 
   return (
-    <section className="py-24 px-6 max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-        <div>
-          <span className="text-electric-blue font-mono text-xs uppercase tracking-[0.4em] mb-4 block">Showcase // Portfolio</span>
-          <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.8]">Work Showcase</h2>
+    <>
+      <section className="py-24 px-6 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+          <div>
+            <span className="text-electric-blue font-mono text-xs uppercase tracking-[0.4em] mb-4 block">Showcase // Portfolio</span>
+            <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.8]">Work Showcase</h2>
+          </div>
+          <div className="flex gap-2 p-1 bg-white/[0.03] border border-white/10 rounded-full">
+            {(['All', 'Websites', 'Designs'] as Category[]).map(cat => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${activeCategory === cat ? 'bg-electric-blue text-charcoal' : 'text-white/40 hover:text-white'}`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="flex gap-2 p-1 bg-white/[0.03] border border-white/10 rounded-full">
-          {(['All', 'Websites', 'Designs'] as Category[]).map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${activeCategory === cat ? 'bg-electric-blue text-charcoal' : 'text-white/40 hover:text-white'}`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <AnimatePresence mode='wait'>
-          {filteredItems.map((item, i) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ delay: i * 0.05 }}
-              className="group relative bg-surface border border-accent-border overflow-hidden rounded-2xl"
-            >
-              {item.image ? (
-                <div className="aspect-video overflow-hidden">
-                  <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                </div>
-              ) : (
-                <div className="aspect-video flex items-center justify-center bg-white/[0.05]">
-                  <Network size={48} className="text-white/10" />
-                </div>
-              )}
-              
-              <div className="p-6">
-                <div className="flex justify-between items-start">
-                  <span className="text-[10px] text-electric-blue font-mono uppercase tracking-[0.2em]">{item.type}</span>
-                  {item.price && <span className="text-sm font-black text-white">{item.price}</span>}
-                </div>
-                <h3 className="text-xl font-bold mt-1 uppercase tracking-tight">{item.title}</h3>
-                <p className="text-sm text-text-dim mt-2 line-clamp-2">{item.description}</p>
-                <div className="flex items-center gap-4 mt-4">
-                  {item.link !== '#' && (
-                    <a href={item.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-electric-blue transition-colors">
-                      View <ExternalLink size={14} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <AnimatePresence mode='wait'>
+            {filteredItems.map((item, i) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ delay: i * 0.05 }}
+                className="group relative bg-surface border border-accent-border overflow-hidden rounded-2xl flex flex-col"
+              >
+                {item.image ? (
+                  <div className="aspect-video overflow-hidden relative">
+                    <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
+                    {item.link !== '#' && (
+                      <button
+                        onClick={() => setPreviewItem({ name: item.title, url: item.link, description: item.description, image: item.image, price: item.price })}
+                        className="absolute top-3 right-3 px-3 py-1 bg-black/70 backdrop-blur-md border border-white/20 rounded-xl text-[10px] font-mono text-white uppercase tracking-wider flex items-center gap-1 hover:bg-electric-blue hover:text-black transition-all"
+                      >
+                        <Globe size={12} /> Preview
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <div className="aspect-video flex items-center justify-center bg-white/[0.05]">
+                    <Network size={48} className="text-white/10" />
+                  </div>
+                )}
+                
+                <div className="p-6 flex flex-col flex-1 justify-between">
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <span className="text-[10px] text-electric-blue font-mono uppercase tracking-[0.2em]">{item.type}</span>
+                      {item.price && <span className="text-sm font-black text-white">{item.price}</span>}
+                    </div>
+                    <h3 className="text-xl font-bold mt-1 uppercase tracking-tight">{item.title}</h3>
+                    <p className="text-sm text-text-dim mt-2 line-clamp-2">{item.description}</p>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4 mt-6 pt-4 border-t border-white/5">
+                    {item.link !== '#' ? (
+                      <button 
+                        onClick={() => setPreviewItem({ name: item.title, url: item.link, description: item.description, image: item.image, price: item.price })}
+                        className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-electric-blue hover:underline"
+                      >
+                        <Globe size={14} /> Live Preview
+                      </button>
+                    ) : <span />}
+                    <a href={SITE_METADATA.social.whatsapp.url} target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-lime-green text-black text-[10px] font-black uppercase tracking-[0.2em] rounded-full hover:bg-white transition-colors">
+                      Order Now
                     </a>
-                  )}
-                  <a href={SITE_METADATA.social.whatsapp.url} target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-lime-green text-black text-[10px] font-black uppercase tracking-[0.2em] rounded-full hover:bg-white transition-colors">
-                    Order Now
-                  </a>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
-    </section>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      </section>
+
+      <LivePreviewModal 
+        isOpen={!!previewItem} 
+        onClose={() => setPreviewItem(null)} 
+        project={previewItem} 
+      />
+    </>
   );
 }

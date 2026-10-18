@@ -15,6 +15,7 @@ import PortfolioPage from './pages/PortfolioPage';
 import AdminDashboard from './pages/AdminDashboard';
 import ReviewsPage from './pages/ReviewsPage';
 import AutomationsPage from './pages/AutomationsPage';
+import RatePopupCard from './components/RatePopupCard';
 import { SITE_METADATA } from './metadata';
 
 const XIcon = ({ size = 24 }: { size?: number }) => (
@@ -116,6 +117,9 @@ export default function App() {
         onClose={() => setIsAdminModalOpen(false)} 
         onSuccess={handleAdminSuccess}
       />
+
+      {/* Rate IcePab's Work Glassy Card Popup */}
+      <RatePopupCard />
 
       {/* Real-time System Notifications */}
       <div className="fixed bottom-12 right-12 z-[90] pointer-events-none">

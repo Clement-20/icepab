@@ -30,8 +30,8 @@ export const SITE_METADATA = {
       url: "https://github.com/Clement-20",
     },
     instagram: {
-      handle: "icepab",
-      url: "https://instagram.com/icepab",
+      handle: "icepab_20",
+      url: "https://instagram.com/icepab_20",
     },
     whatsapp: {
       handle: "09127813092",
