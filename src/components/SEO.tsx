@@ -20,6 +20,8 @@ export default function SEO({
   const activeDescription = description || knowledge.description;
   const activeImage = image || knowledge.ogImage;
 
+  const currentUrl = typeof window !== 'undefined' ? window.location.origin + window.location.pathname : knowledge.url;
+
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -58,20 +60,20 @@ export default function SEO({
         <meta name="description" content={activeDescription} />
         <meta name="keywords" content={knowledge.keywords} />
         <meta name="author" content={knowledge.author} />
-        <link rel="canonical" href={knowledge.url} />
+        <link rel="canonical" href={currentUrl} />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <meta name="googlebot" content="index, follow" />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={knowledge.url} />
+        <meta property="og:url" content={currentUrl} />
         <meta property="og:title" content={finalTitle} />
         <meta property="og:description" content={activeDescription} />
         <meta property="og:image" content={activeImage} />
 
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content={knowledge.url} />
+        <meta property="twitter:url" content={currentUrl} />
         <meta property="twitter:title" content={finalTitle} />
         <meta property="twitter:description" content={activeDescription} />
         <meta property="twitter:image" content={activeImage} />

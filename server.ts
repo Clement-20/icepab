@@ -96,6 +96,7 @@ function getSEOMetadata(requestPath: string) {
 
 function injectSEOTags(html: string, requestPath: string): string {
   const meta = getSEOMetadata(requestPath);
+  const currentUrl = `https://icepab.name.ng${requestPath}`;
 
   let modified = html.replace(
     /<title>.*?<\/title>/gi,
@@ -108,6 +109,16 @@ function injectSEOTags(html: string, requestPath: string): string {
   );
 
   modified = modified.replace(
+    /<link rel="canonical" href=".*?" \/>/gi,
+    `<link rel="canonical" href="${currentUrl}" />`
+  );
+
+  modified = modified.replace(
+    /<meta property="og:url" content=".*?" \/>/gi,
+    `<meta property="og:url" content="${currentUrl}" />`
+  );
+
+  modified = modified.replace(
     /<meta property="og:title" content=".*?" \/>/gi,
     `<meta property="og:title" content="${meta.title}" />`
   );
@@ -115,6 +126,11 @@ function injectSEOTags(html: string, requestPath: string): string {
   modified = modified.replace(
     /<meta property="og:description" content=".*?" \/>/gi,
     `<meta property="og:description" content="${meta.desc}" />`
+  );
+
+  modified = modified.replace(
+    /<meta name="twitter:url" content=".*?" \/>/gi,
+    `<meta name="twitter:url" content="${currentUrl}" />`
   );
 
   modified = modified.replace(
