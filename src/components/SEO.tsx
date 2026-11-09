@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useKnowledge } from '../contexts/KnowledgeContext';
 import JsonLd from './JsonLd';
@@ -7,18 +7,62 @@ interface SEOProps {
   title?: string;
   description?: string;
   image?: string;
+  pageKey?: string;
+  projectId?: string;
 }
 
 export default function SEO({ 
   title, 
   description,
-  image
+  image,
+  pageKey,
+  projectId
 }: SEOProps) {
   const { knowledge } = useKnowledge();
-  
-  const activeTitle = title || knowledge.title;
-  const activeDescription = description || knowledge.description;
-  const activeImage = image || knowledge.ogImage;
+  const [metaOverride, setMetaOverride] = useState<{ title?: string; description?: string; image?: string } | null>(null);
+
+  useEffect(() => {
+    try {
+      const pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
+      let resolvedKey = pageKey;
+      if (!resolvedKey) {
+        if (pathname === '/') resolvedKey = 'home';
+        else if (pathname.startsWith('/portfolio')) resolvedKey = 'portfolio';
+        else if (pathname.startsWith('/automations')) resolvedKey = 'automations';
+        else if (pathname.startsWith('/reviews')) resolvedKey = 'reviews';
+        else if (pathname.startsWith('/about')) resolvedKey = 'about';
+        else if (pathname.startsWith('/designs')) resolvedKey = 'designs';
+        else if (pathname.startsWith('/stories')) resolvedKey = 'stories';
+        else if (pathname.startsWith('/systems')) resolvedKey = 'systems';
+        else if (pathname.startsWith('/admin')) resolvedKey = 'admin';
+      }
+
+      if (projectId) {
+        const storedProj = localStorage.getItem('icepab_project_metadata_overrides');
+        if (storedProj) {
+          const parsed = JSON.parse(storedProj);
+          if (parsed[projectId]) {
+            setMetaOverride(parsed[projectId]);
+            return;
+          }
+        }
+      }
+
+      if (resolvedKey) {
+        const storedPages = localStorage.getItem('icepab_page_metadata_overrides');
+        if (storedPages) {
+          const parsed = JSON.parse(storedPages);
+          if (parsed[resolvedKey]) {
+            setMetaOverride(parsed[resolvedKey]);
+          }
+        }
+      }
+    } catch (e) {}
+  }, [pageKey, projectId]);
+
+  const activeTitle = metaOverride?.title || title || knowledge.title;
+  const activeDescription = metaOverride?.description || description || knowledge.description;
+  const activeImage = metaOverride?.image || image || knowledge.ogImage;
 
   const currentUrl = typeof window !== 'undefined' ? window.location.origin + window.location.pathname : knowledge.url;
 

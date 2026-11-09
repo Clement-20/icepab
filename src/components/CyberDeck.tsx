@@ -103,14 +103,20 @@ export default function CyberDeck({ isXrActive, onXrToggle, spatialDepth, onSpat
     }
 
     try {
-      const response = await fetch('/api/gemini/stream', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'text/event-stream'
         },
         body: JSON.stringify({ 
           prompt: activePrompt, 
-          image: aiImage 
+          image: aiImage,
+          stream: true,
+          messages: [
+            ...aiHistory.map(h => ({ role: h.role === 'model' ? 'assistant' : 'user', content: h.text })),
+            { role: 'user', content: activePrompt }
+          ]
         })
       });
 
@@ -294,6 +300,48 @@ export default function CyberDeck({ isXrActive, onXrToggle, spatialDepth, onSpat
     const cleanCmd = cliInput.trim().toLowerCase();
     if (!cleanCmd) return;
 
+    if (cleanCmd.startsWith('chat ') || cleanCmd.startsWith('ask ') || cleanCmd === 'chat' || cleanCmd === 'ask') {
+      const query = cliInput.replace(/^(chat|ask)\s*/i, '').trim();
+      if (!query) {
+        setCliHistory([
+          ...cliHistory,
+          { text: `${agentName.toLowerCase()}@icepab:~$ ${cliInput}`, type: 'input' },
+          { text: "COMMAND USAGE: chat <your inquiry for Clement's AI Assistant>", type: 'system' },
+          { text: "Example: chat How much does a custom SaaS web app cost?", type: 'data' }
+        ]);
+        setCliInput('');
+        return;
+      }
+
+      setCliHistory(prev => [
+        ...prev,
+        { text: `${agentName.toLowerCase()}@icepab:~$ ${cliInput}`, type: 'input' },
+        { text: "Routing to MiniMax-M2.7 Customer Assistant via inference.dahl.global...", type: 'system' }
+      ]);
+      const currentInput = query;
+      setCliInput('');
+
+      fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: currentInput, stream: false })
+      })
+      .then(r => r.json())
+      .then(data => {
+        setCliHistory(prev => [
+          ...prev,
+          { text: `[MINIMAX-M2.7 CUSTOMER AI]:\n${data.text || data.message || "Uplink verified."}`, type: 'success' }
+        ]);
+      })
+      .catch(err => {
+        setCliHistory(prev => [
+          ...prev,
+          { text: `AI LINK ERROR: ${err.message}`, type: 'warning' }
+        ]);
+      });
+      return;
+    }
+
     const newLines: ConsoleLine[] = [
       ...cliHistory,
       { text: `${agentName.toLowerCase()}@icepab:~$ ${cliInput}`, type: 'input' }
@@ -303,6 +351,7 @@ export default function CyberDeck({ isXrActive, onXrToggle, spatialDepth, onSpat
       case 'help':
         newLines.push(
           { text: "AUTHORIZED DIRECTORY ROUTINES:", type: 'system' },
+          { text: "  chat <query>- Talk directly with MiniMax-M2.7 AI Customer Assistant", type: 'success' },
           { text: "  bio         - Stream professional biographical index", type: 'data' },
           { text: "  projects    - Query live SaaS applications and testing modules", type: 'data' },
           { text: "  skills      - Enumerate automated workflows & technical frameworks", type: 'data' },
@@ -318,7 +367,7 @@ export default function CyberDeck({ isXrActive, onXrToggle, spatialDepth, onSpat
         newLines.push(
           { text: `UPLINK SECURED: COGNITIVE FEEDBACK ONLINE FOR [${agentName}]`, type: 'success' },
           { text: `System Core: "Greetings, Agent ${agentName}. We have established full neural bypass. How may I facilitate your exploration of Clem's workspace today?"`, type: 'data' },
-          { text: "System prompt suggestion: Type 'projects' to scan active systems, or 'bio' for schematic files.", type: 'system' }
+          { text: "System prompt suggestion: Type 'chat <question>' to ask the AI assistant, or 'projects' to scan active systems.", type: 'system' }
         );
         break;
       case 'selfdestruct':
@@ -389,10 +438,33 @@ export default function CyberDeck({ isXrActive, onXrToggle, spatialDepth, onSpat
         setCliInput('');
         return;
       default:
-        newLines.push({
-          text: `SYS_ERR: Security rule unauthorized or unknown routine '${cleanCmd}'. Enter 'help'.`,
-          type: 'warning'
+        // Automatically ask the AI customer assistant for natural queries
+        setCliHistory([
+          ...cliHistory,
+          { text: `${agentName.toLowerCase()}@icepab:~$ ${cliInput}`, type: 'input' },
+          { text: `Connecting to Dahl MiniMax-M2.7 Customer Assistant for '${cliInput}'...`, type: 'system' }
+        ]);
+        const fallbackQuery = cliInput;
+        setCliInput('');
+        fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: fallbackQuery, stream: false })
+        })
+        .then(r => r.json())
+        .then(data => {
+          setCliHistory(prev => [
+            ...prev,
+            { text: `[MINIMAX-M2.7 CUSTOMER AI]:\n${data.text || data.message || "Standby acknowledged."}`, type: 'success' }
+          ]);
+        })
+        .catch(err => {
+          setCliHistory(prev => [
+            ...prev,
+            { text: `SYS_ERR: Routine '${cleanCmd}' not found. Enter 'help' or 'chat <msg>'.`, type: 'warning' }
+          ]);
         });
+        return;
     }
 
     setCliHistory(newLines);
@@ -515,7 +587,7 @@ export default function CyberDeck({ isXrActive, onXrToggle, spatialDepth, onSpat
                 onClick={() => setActiveTab('ai_feed')}
                 className={`flex-1 py-3 text-center transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'ai_feed' ? 'bg-electric-blue/10 text-electric-blue' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
               >
-                <Cpu size={12} /> AI_METRICS
+                <MessageSquare size={12} /> CUSTOMER_AI
               </button>
             </div>
 
@@ -564,6 +636,7 @@ export default function CyberDeck({ isXrActive, onXrToggle, spatialDepth, onSpat
                     >
                       <button onClick={() => executeShortcut('bio')} className="px-2 py-1 bg-white/5 hover:bg-electric-blue/10 border border-white/10 hover:border-electric-blue/30 rounded text-[9px] text-white">/bio</button>
                       <button onClick={() => executeShortcut('projects')} className="px-2 py-1 bg-white/5 hover:bg-electric-blue/10 border border-white/10 hover:border-electric-blue/30 rounded text-[9px] text-white">/projects</button>
+                      <button onClick={() => setActiveTab('ai_feed')} className="px-2 py-1 bg-electric-blue/10 hover:bg-electric-blue/20 border border-electric-blue/40 text-electric-blue rounded text-[9px] font-bold">⚡ Ask MiniMax AI</button>
                       <button onClick={() => executeShortcut('scan')} className="px-2 py-1 bg-white/5 hover:bg-[#80FF00]/10 border border-white/10 hover:border-[#80FF00]/30 rounded text-[9px] text-white">/scan</button>
                       <button onClick={() => executeShortcut('xr-toggle')} className="px-2 py-1 bg-white/5 hover:bg-electric-blue/10 border border-white/10 hover:border-electric-blue/30 rounded text-[9px] text-white">/hologram</button>
                     </motion.div>
@@ -680,37 +753,44 @@ export default function CyberDeck({ isXrActive, onXrToggle, spatialDepth, onSpat
                     {/* Header and Status Monitor */}
                     <div className="flex justify-between items-center p-3.5 bg-white/5 border border-white/10 rounded-xl">
                       <div>
-                        <span className="text-[8px] uppercase tracking-widest text-[#00e5ff]/60">Neural Cognitive Platform</span>
-                        <h4 className="text-xs font-bold text-white uppercase tracking-wider">GEMINI-3.5-FLASH LIVE</h4>
+                        <span className="text-[8px] uppercase tracking-widest text-[#00e5ff]/60">AI Customer Assistant // Dahl Global</span>
+                        <h4 className="text-xs font-bold text-white uppercase tracking-wider">MiniMaxAI/MiniMax-M2.7</h4>
                       </div>
                       <span className="text-[9px] font-black px-2.5 py-1 bg-lime-green/20 border border-lime-green/40 text-lime-green rounded flex items-center gap-1">
                         <span className="w-1.5 h-1.5 bg-lime-green rounded-full animate-ping" />
-                        SECURED
+                        DAHL INFERENCE
                       </span>
                     </div>
 
                     {/* Chat and Streaming response index */}
                     <div className="flex-1 min-h-[140px] max-h-[220px] overflow-y-auto border border-white/5 bg-black/40 rounded-xl p-3 space-y-3.5 no-scrollbar text-[10px]">
                       {aiHistory.length === 0 && !aiResponse && !isAiLoading && (
-                        <div className="text-center py-6 text-white/30 space-y-3">
+                        <div className="text-center py-5 text-white/30 space-y-3">
                           <Sparkles className="mx-auto text-electric-blue w-6 h-6 animate-pulse" />
                           <p className="uppercase tracking-widest text-[8px] max-w-xs mx-auto">
-                            UPLINK INITIATED. Drop an image or send a prompt to analyze with Gemini intelligence.
+                            UPLINK INITIATED. Chat with IcePab&apos;s customer assistant powered by MiniMax-M2.7 at inference.dahl.global.
                           </p>
-                          <div className="flex flex-col gap-1.5 max-w-xs mx-auto pt-2">
+                          <div className="flex flex-col gap-1.5 max-w-xs mx-auto pt-1">
                             <button
                               type="button"
-                              onClick={() => submitAiQuery("Explain what Clem can build with ICEPAB platforms.")}
+                              onClick={() => submitAiQuery("What are your project prices and packages?")}
                               className="px-2.5 py-1.5 bg-white/[0.03] hover:bg-white/10 border border-white/10 hover:border-[#00e5ff]/40 text-left text-white/80 rounded uppercase text-[8px] tracking-wider transition-all"
                             >
-                              ⚡ What can Clem build with ICEPAB?
+                              ⚡ What are your project prices & packages?
                             </button>
                             <button
                               type="button"
-                              onClick={() => submitAiQuery("Give me ideas for optimizing OAU CBT center portals under low latency.")}
+                              onClick={() => submitAiQuery("How does ExamGuard CBT work for universities?")}
                               className="px-2.5 py-1.5 bg-white/[0.03] hover:bg-white/10 border border-white/10 hover:border-[#00e5ff]/40 text-left text-white/80 rounded uppercase text-[8px] tracking-wider transition-all"
                             >
-                              ⚡ Optimize OAU CBT center latency
+                              ⚡ How does ExamGuard CBT work?
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => submitAiQuery("How do I book an intro call or chat on WhatsApp?")}
+                              className="px-2.5 py-1.5 bg-white/[0.03] hover:bg-white/10 border border-white/10 hover:border-[#00e5ff]/40 text-left text-white/80 rounded uppercase text-[8px] tracking-wider transition-all"
+                            >
+                              ⚡ How do I book an intro call / WhatsApp?
                             </button>
                           </div>
                         </div>
@@ -720,8 +800,8 @@ export default function CyberDeck({ isXrActive, onXrToggle, spatialDepth, onSpat
                       {aiHistory.map((item, index) => (
                         <div key={index} className="space-y-1">
                           <div className="flex justify-between items-center opacity-40 font-bold uppercase text-[8px] tracking-wider">
-                            <span>{item.role === 'user' ? agentName : 'GEMINI_AGENT'}</span>
-                            <span>UPLINKSECURE</span>
+                            <span>{item.role === 'user' ? agentName : 'MINIMAX-M2.7 (DAHL)'}</span>
+                            <span>UPLINK_OK</span>
                           </div>
                           {item.image && (
                             <div className="relative inline-block border border-white/10 rounded-lg overflow-hidden max-w-[120px] mt-1">
@@ -739,8 +819,8 @@ export default function CyberDeck({ isXrActive, onXrToggle, spatialDepth, onSpat
                       {aiResponse && (
                         <div className="space-y-1">
                           <div className="flex justify-between items-center opacity-40 font-bold uppercase text-[8px] tracking-wider text-lime-green">
-                            <span>GEMINI_STREAMING_AGENT</span>
-                            <span className="animate-pulse">FLOWING...</span>
+                            <span>MINIMAX_STREAMING_AGENT // DAHL</span>
+                            <span className="animate-pulse">STREAMING...</span>
                           </div>
                           <div className="p-2.5 rounded-lg bg-[#00e5ff]/5 border border-[#00e5ff]/30 text-[#00e5ff] leading-relaxed break-words whitespace-pre-wrap animate-pulse">
                             {aiResponse}
@@ -752,7 +832,7 @@ export default function CyberDeck({ isXrActive, onXrToggle, spatialDepth, onSpat
                       {isAiLoading && !aiResponse && (
                         <div className="flex items-center gap-2 p-3 bg-black/60 border border-white/5 rounded-lg text-white/40 uppercase tracking-widest text-[8px]">
                           <Loader2 className="w-3.5 h-3.5 animate-spin text-electric-blue" />
-                          <span>Streaming low latency neural matrices...</span>
+                          <span>Routing query to MiniMax-M2.7...</span>
                         </div>
                       )}
 
@@ -761,19 +841,17 @@ export default function CyberDeck({ isXrActive, onXrToggle, spatialDepth, onSpat
                         <div className="p-3 bg-red-950/40 border border-red-500/30 text-red-200 rounded-lg space-y-2 uppercase text-[9px] tracking-wider leading-relaxed">
                           <div className="flex items-center gap-2 font-bold text-red-400">
                             <AlertTriangle className="w-4 h-4 flex-shrink-0" />
-                            <span>COGNITIVE GATEWAY FAILURE</span>
+                            <span>COGNITIVE GATEWAY NOTICE</span>
                           </div>
                           <p>{aiError}</p>
-                          {aiError.toLowerCase().includes("gemini_api_key") && (
-                            <p className="text-[8px] text-red-300 font-bold tracking-widest border-t border-red-500/20 pt-1.5">
-                              ★ ACTION REQUIRED: Setup your API Key in the &quot;Settings &gt; Secrets&quot; panel in Google AI Studio before calling Gemini intelligence.
-                            </p>
-                          )}
+                          <p className="text-[8px] text-red-300 font-bold tracking-widest border-t border-red-500/20 pt-1.5">
+                            ★ Note: When ready, paste your DAHL_API_KEY into your server environment variables or Secrets panel.
+                          </p>
                         </div>
                       )}
                     </div>
 
-                    {/* Dual Form Controller (Image input + Text prompt text and actions) */}
+                    {/* Dual Form Controller */}
                     <div className="space-y-3 pt-1">
                       {/* Image Drop / Attach Indicator Panel */}
                       <div className="flex items-center gap-2">
@@ -806,10 +884,10 @@ export default function CyberDeck({ isXrActive, onXrToggle, spatialDepth, onSpat
                           <button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
-                            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-white/[0.02] hover:bg-white/5 border border-dashed border-white/20 hover:border-electric-blue rounded-xl text-white/40 hover:text-[#00e5ff] text-[9px] font-mono uppercase tracking-widest transition-all"
+                            className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-white/[0.02] hover:bg-white/5 border border-dashed border-white/20 hover:border-electric-blue rounded-xl text-white/40 hover:text-[#00e5ff] text-[9px] font-mono uppercase tracking-widest transition-all"
                           >
                             <Upload size={12} />
-                            <span>ATTACH IMAGE SCANNER (MAX 4MB)</span>
+                            <span>ATTACH CONTEXT SPEC / IMAGE (OPTIONAL)</span>
                           </button>
                         )}
                       </div>
@@ -823,7 +901,7 @@ export default function CyberDeck({ isXrActive, onXrToggle, spatialDepth, onSpat
                           type="text"
                           value={aiPrompt}
                           onChange={(e) => setAiPrompt(e.target.value)}
-                          placeholder={isAiLoading ? "Streaming..." : "Interface prompt..."}
+                          placeholder={isAiLoading ? "Streaming..." : "Ask customer assistant..."}
                           className="flex-1 bg-transparent text-white text-[10px] uppercase font-mono tracking-wider focus:outline-none min-w-0 placeholder:text-white/20"
                           disabled={isAiLoading}
                         />
@@ -838,9 +916,9 @@ export default function CyberDeck({ isXrActive, onXrToggle, spatialDepth, onSpat
                     </div>
 
                     {/* Operational system telemetry note */}
-                    <div className="pt-2 border-t border-white/5 flex justify-between items-center text-[8px] text-white/20 uppercase tracking-widest">
-                      <span>LATENCY: ZERO_STREAM</span>
-                      <span>SECURE_COG: GEMINI-3.5</span>
+                    <div className="pt-2 border-t border-white/5 flex justify-between items-center text-[8px] text-white/30 uppercase tracking-widest font-mono">
+                      <span>ENDPOINT: inference.dahl.global</span>
+                      <span>MODEL: MiniMax-M2.7</span>
                     </div>
                   </motion.div>
                 )}

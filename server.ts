@@ -255,67 +255,275 @@ async function startServer() {
     }
   });
 
-  // API Route: Low-latency streaming Gemini intelligence & image analysis
-  app.post("/api/gemini/stream", async (req, res) => {
-    try {
-      const { prompt, image } = req.body;
-      if (!prompt) {
-        return res.status(400).json({ success: false, error: "Prompt is required" });
-      }
+  // Dahl Global Inference Settings (MiniMaxAI/MiniMax-M2.7)
+  const DAHL_API_ENDPOINT = "https://inference.dahl.global/v1/chat/completions";
+  const DAHL_MODEL = "MiniMaxAI/MiniMax-M2.7";
 
-      let aiClient;
-      try {
-        aiClient = getGeminiClient();
-      } catch (keyError: any) {
-        return res.status(401).json({ success: false, error: keyError.message });
-      }
+  const SYSTEM_CUSTOMER_PROMPT = `You are Clems' IcePab AI Customer Assistant, an intelligent, sleek, high-tech conversational assistant embedded directly in Clement IfeOluwa's (ICEPAB / Banmeke IfeOluwa Elijah) digital workspace portfolio and terminal interface.
+You are powered by MiniMax-M2.7 via Dahl Global inference (https://inference.dahl.global).
 
-      // Configure SSE Headers for instant continuous data delivery
-      res.setHeader('Content-Type', 'text/event-stream');
-      res.setHeader('Cache-Control', 'no-cache');
-      res.setHeader('Connection', 'keep-alive');
-      res.setHeader('X-Accel-Buffering', 'no'); // prevents intermediate buffering for lowest latency
+Your Primary Purpose:
+- Help clients, prospective customers, recruiters, and visitors learn about Clement's work, request project quotes, explore architecture, and get started.
+- Be articulate, prompt, polite, and confident with a subtle retro-cyberpunk flavor.
 
-      const parts: any[] = [];
+Core Knowledge Base:
+- Founder: Clement IfeOluwa (Banmeke IfeOluwa Elijah), founder of ICEPAB Systems.
+- Academic & Strategic Foundation: Business Administration at Obafemi Awolowo University (OAU), bridging software architecture with business operations.
+- Key Applications & Products:
+  1. ExamGuard (OAU CBT): High-concurrency institutional computer-based testing engine with anti-cheat browser sandboxing, sub-15ms grading, and encrypted offline evaluation cache.
+  2. AnonNote (https://anonote-three.vercel.app): Encrypted anonymous note-taking and feedback sharing web app.
+  3. Workflow Automation (Ice-Net): Distributed background process automation, webhooks, cron schedulers, and admin management consoles.
+  4. Sync Lab Systems: Brand design systems, Figma UI/UX prototypes, and vector illustrations.
+- Pricing & Timelines:
+  - UI/UX & Brand Design: Starting at $150 (3-5 days delivery).
+  - Business Process & Automation: Starting at $200.
+  - Full-Stack SaaS & Web Apps: Starting at $350 (2-3 weeks standard, express option available).
+  - ExamGuard CBT: Starting at $450-$500.
+- Revisions & Quality: Up to 3 rounds of comprehensive revisions included; full source code, deployment, and documentation delivered.
+- Direct Contact Channels:
+  - WhatsApp: https://wa.me/2349127813092 (+234 912 781 3092)
+  - Direct Email: banmekeifeoluwa@gmail.com
+  - Instagram: @icepab_20 (https://instagram.com/icepab_20)
+  - X / Twitter: @clementife12500 (https://x.com/clementife12500)
+  - Google Reviews: https://g.page/r/CQs_XxkTjtm3EBE/review
 
-      // Add high-resolution base64 image part if supplied for multi-modal analysis
-      if (image) {
-        const matches = image.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+);base64,(.+)$/);
-        if (matches && matches.length === 3) {
-          const mimeType = matches[1];
-          const base64Data = matches[2];
-          parts.push({
-            inlineData: {
-              data: base64Data,
-              mimeType: mimeType
-            }
+Guidelines:
+- Keep responses direct, informative, and formatted with clean bullet points when explaining features or pricing.
+- Guide prospective clients on how to reach out via WhatsApp or book a call via the site's scoping calculator.`;
+
+  function getStandbyCustomerReply(promptText: string): string {
+    const p = (promptText || "").toLowerCase();
+    if (p.includes("price") || p.includes("cost") || p.includes("charge") || p.includes("fee") || p.includes("rate") || p.includes("quote")) {
+      return "ICEPAB project investment tiers start at:\n• UI/UX & Brand Systems: from $150 (3-5 days express)\n• Business Workflow Automation: from $200\n• Full-Stack SaaS & Web Applications: from $350 (2-3 weeks standard)\n• ExamGuard CBT Custom Engine: from $450-$500\n\nYou can also use our interactive Scoping Calculator on the website or message Clement directly on WhatsApp (+234 912 781 3092) for an instant customized estimate!";
+    }
+    if (p.includes("cbt") || p.includes("examguard") || p.includes("exam") || p.includes("test")) {
+      return "ExamGuard is our flagship CBT platform engineered for high-concurrency exams at Obafemi Awolowo University (OAU):\n• Anti-cheat sandbox isolation preventing tab switching and shortcut bypasses\n• Sub-15ms grading engine with local cached recovery\n• Concurrency tested for 5,000+ simultaneous candidates\n• Deployable completely offline on local LAN servers with zero internet requirement.";
+    }
+    if (p.includes("contact") || p.includes("reach") || p.includes("hire") || p.includes("whatsapp") || p.includes("email") || p.includes("phone") || p.includes("call")) {
+      return "You can reach Clement IfeOluwa directly:\n• WhatsApp: https://wa.me/2349127813092 (+234 912 781 3092)\n• Direct Email: banmekeifeoluwa@gmail.com\n• Instagram: @icepab_20\n• X/Twitter: @clementife12500\n\nClement typically responds within an hour for active project inquiries!";
+    }
+    if (p.includes("timeline") || p.includes("how long") || p.includes("delivery") || p.includes("turnaround")) {
+      return "Typical delivery timelines:\n• Express UI Prototypes: 3-5 days\n• Workflow & Integrations: 5-7 days\n• Full-Stack Web Applications: 2-3 weeks including 3 revision rounds and production staging.";
+    }
+    if (p.includes("who") || p.includes("clement") || p.includes("icepab") || p.includes("bio")) {
+      return "Clement IfeOluwa (Banmeke IfeOluwa Elijah) is a systems developer, UI/UX designer, and founder of ICEPAB Systems. Studying Business Administration at Obafemi Awolowo University (OAU), he builds high-performance software engineered around real business operations.";
+    }
+    return "Welcome to ICEPAB Systems! I am your AI Customer Assistant powered by MiniMax-M2.7 via Dahl Global inference. Whether you need high-concurrency SaaS applications, institutional CBT setups like ExamGuard, or custom brand systems, I am here to assist. Ask me anything about pricing, architecture, or how to get started!";
+  }
+
+  async function handleDahlOrFallbackChat({
+    prompt,
+    messages,
+    stream,
+    res
+  }: {
+    prompt?: string;
+    messages?: Array<{ role: string; content: string }>;
+    stream: boolean;
+    res: express.Response;
+  }) {
+    const dahlApiKey = process.env.DAHL_API_KEY?.trim();
+
+    const formattedMessages: Array<{ role: string; content: string }> = [
+      { role: "system", content: SYSTEM_CUSTOMER_PROMPT }
+    ];
+
+    if (Array.isArray(messages) && messages.length > 0) {
+      for (const msg of messages) {
+        if (msg && typeof msg.content === 'string') {
+          formattedMessages.push({
+            role: msg.role === 'model' || msg.role === 'assistant' ? 'assistant' : 'user',
+            content: msg.content
           });
         }
       }
+    } else if (prompt) {
+      formattedMessages.push({ role: "user", content: prompt });
+    }
 
-      // Add standard text query prompt
-      parts.push({ text: prompt });
+    const userQuery = prompt || (messages && messages[messages.length - 1]?.content) || "Hello!";
 
-      // Run streaming content generation with the multi-modal 'gemini-3.5-flash'
-      const responseStream = await aiClient.models.generateContentStream({
-        model: "gemini-3.5-flash",
-        contents: { parts: parts },
-        config: {
-          systemInstruction: "You are Clems' IcePab Digital AI assistant, a sleek holographic intelligence embedded directly within Clement IfeOluwa's digital workspace portfolio. Keep responses concise, high-tech, actionable, engaging, and in line with our secure retro cyber-theme."
+    // Case 1: DAHL_API_KEY is configured
+    if (dahlApiKey) {
+      try {
+        console.log(`[DAHL_AI] Dispatching request to ${DAHL_API_ENDPOINT} (model: ${DAHL_MODEL}, stream: ${stream})`);
+        
+        const dahlResponse = await fetch(DAHL_API_ENDPOINT, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${dahlApiKey}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: DAHL_MODEL,
+            messages: formattedMessages,
+            stream: stream
+          })
+        });
+
+        if (!dahlResponse.ok) {
+          const errorText = await dahlResponse.text();
+          console.error(`[DAHL_AI_ERROR] HTTP ${dahlResponse.status}:`, errorText);
+          let parsedMessage = errorText;
+          try {
+            const errJson = JSON.parse(errorText);
+            parsedMessage = errJson.error?.message || errJson.message || errorText;
+          } catch (e) {}
+          throw new Error(`Dahl Inference error (${dahlResponse.status}): ${parsedMessage}`);
         }
-      });
 
-      for await (const chunk of responseStream) {
-        const text = chunk.text;
-        if (text) {
-          res.write(`data: ${JSON.stringify({ text })}\n\n`);
+        if (stream) {
+          res.setHeader('Content-Type', 'text/event-stream');
+          res.setHeader('Cache-Control', 'no-cache');
+          res.setHeader('Connection', 'keep-alive');
+          res.setHeader('X-Accel-Buffering', 'no');
+
+          if (!dahlResponse.body) {
+            throw new Error("No response body received from Dahl stream.");
+          }
+
+          const reader = dahlResponse.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = '';
+
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed || trimmed.startsWith(':')) continue;
+
+              if (trimmed.startsWith('data: ')) {
+                const dataStr = trimmed.slice(6).trim();
+                if (dataStr === '[DONE]') {
+                  res.write("data: [DONE]\n\n");
+                  continue;
+                }
+
+                try {
+                  const parsed = JSON.parse(dataStr);
+                  const deltaText = parsed.choices?.[0]?.delta?.content || parsed.choices?.[0]?.text || '';
+                  if (deltaText) {
+                    res.write(`data: ${JSON.stringify({ text: deltaText, model: DAHL_MODEL })}\n\n`);
+                  }
+                } catch (e) {
+                  // Ignore parse errors on raw chunks
+                }
+              }
+            }
+          }
+
+          res.write("data: [DONE]\n\n");
+          return res.end();
+        } else {
+          // Non-streaming response
+          const data: any = await dahlResponse.json();
+          const replyText = data.choices?.[0]?.message?.content || "";
+          return res.json({
+            success: true,
+            model: DAHL_MODEL,
+            provider: "inference.dahl.global",
+            text: replyText
+          });
         }
+      } catch (err: any) {
+        console.error("[DAHL_STREAM_FAILURE]", err);
+        if (stream) {
+          if (!res.headersSent) {
+            res.setHeader('Content-Type', 'text/event-stream');
+            res.setHeader('Cache-Control', 'no-cache');
+            res.setHeader('Connection', 'keep-alive');
+          }
+          res.write(`data: ${JSON.stringify({ text: `\n\n[Dahl Service Notice]: ${err.message}\n\nAutomated Standby Response:\n${getStandbyCustomerReply(userQuery)}`, model: DAHL_MODEL })}\n\n`);
+          res.write("data: [DONE]\n\n");
+          return res.end();
+        } else {
+          return res.status(200).json({
+            success: true,
+            model: DAHL_MODEL,
+            text: `[Dahl Service Notice]: ${err.message}\n\n${getStandbyCustomerReply(userQuery)}`,
+            fallback: true
+          });
+        }
+      }
+    }
+
+    // Case 2: DAHL_API_KEY is not configured yet (User explicitly noted: "i will paste the api key later")
+    const standbyResponse = getStandbyCustomerReply(userQuery);
+    const statusNote = `[DAHL AI READY // MiniMaxAI/MiniMax-M2.7]\n` +
+      `Endpoint: https://inference.dahl.global/v1/chat/completions\n` +
+      `Key Status: Awaiting DAHL_API_KEY in environment variables.\n\n` +
+      `${standbyResponse}`;
+
+    if (stream) {
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+      res.setHeader('X-Accel-Buffering', 'no');
+
+      const words = statusNote.split(' ');
+      for (let i = 0; i < words.length; i++) {
+        const chunk = words[i] + (i < words.length - 1 ? ' ' : '');
+        res.write(`data: ${JSON.stringify({ text: chunk, model: DAHL_MODEL })}\n\n`);
+        await new Promise(resolve => setTimeout(resolve, 20));
       }
 
       res.write("data: [DONE]\n\n");
-      res.end();
+      return res.end();
+    } else {
+      return res.json({
+        success: true,
+        model: DAHL_MODEL,
+        provider: "inference.dahl.global",
+        text: statusNote,
+        keyConfigured: false
+      });
+    }
+  }
+
+  // API Route: Customer AI Chat endpoint powered by Dahl Global (MiniMaxAI/MiniMax-M2.7)
+  app.post("/api/chat", async (req, res) => {
+    try {
+      const { prompt, messages, stream } = req.body;
+      const wantsStream = stream === true || req.headers.accept?.includes('text/event-stream');
+      await handleDahlOrFallbackChat({ prompt, messages, stream: !!wantsStream, res });
     } catch (error: any) {
-      console.error("[GEMINI_STREAM_ERROR]", error);
+      console.error("[CHAT_ENDPOINT_ERROR]", error);
+      if (!res.headersSent) {
+        res.status(500).json({ success: false, error: error.message });
+      }
+    }
+  });
+
+  // Alias Route: /api/dahl/chat
+  app.post("/api/dahl/chat", async (req, res) => {
+    try {
+      const { prompt, messages, stream } = req.body;
+      const wantsStream = stream === true || req.headers.accept?.includes('text/event-stream');
+      await handleDahlOrFallbackChat({ prompt, messages, stream: !!wantsStream, res });
+    } catch (error: any) {
+      console.error("[DAHL_CHAT_ENDPOINT_ERROR]", error);
+      if (!res.headersSent) {
+        res.status(500).json({ success: false, error: error.message });
+      }
+    }
+  });
+
+  // API Route: Unified streaming route (routes to Dahl Global MiniMaxAI/MiniMax-M2.7)
+  app.post("/api/gemini/stream", async (req, res) => {
+    try {
+      const { prompt, messages } = req.body;
+      if (!prompt && (!messages || messages.length === 0)) {
+        return res.status(400).json({ success: false, error: "Prompt or messages required" });
+      }
+      await handleDahlOrFallbackChat({ prompt, messages, stream: true, res });
+    } catch (error: any) {
+      console.error("[STREAM_ENDPOINT_ERROR]", error);
       if (!res.headersSent) {
         res.status(500).json({ success: false, error: error.message });
       } else {

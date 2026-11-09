@@ -69,19 +69,5 @@ export const projectData: ProjectApp[] = [
     color: '#FF00E5',
     price: '$150',
     image: 'https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=600&auto=format&fit=crop',
-  },
-  {
-    id: 'flex-store',
-    name: 'FlexStore',
-    tagline: 'Digital Asset Delivery Storefront',
-    description: 'High-speed, lightweight e-commerce storefront architectures optimized for fast load times and instant digital asset downloads.',
-    icon: 'Market',
-    url: 'https://flexstore.icepab.name.ng',
-    status: 'live',
-    category: 'Market',
-    features: ['Fast Performance', 'Responsive Checkout', 'Secure Delivery'],
-    color: '#FFD700',
-    price: '$300',
-    image: 'https://images.unsplash.com/photo-1557821552-17105176677c?q=80&w=600&auto=format&fit=crop',
-  },
+  }
 ];

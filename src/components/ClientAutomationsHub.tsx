@@ -104,9 +104,10 @@ export default function ClientAutomationsHub() {
   // --- Automation 3 State: Smart Support & FAQ Chatbot ---
   const [faqSearch, setFaqSearch] = useState('');
   const [chatMessages, setChatMessages] = useState<Array<{ sender: 'bot' | 'user'; text: string }>>([
-    { sender: 'bot', text: 'Greetings! I am the IcePab AI Client Assistant. Ask me anything about project pricing, revision policies, delivery timelines, or CBT systems.' }
+    { sender: 'bot', text: 'Greetings! I am the IcePab AI Client Assistant powered by MiniMax-M2.7. Ask me anything about project pricing, revision policies, delivery timelines, ExamGuard CBT, or tech specs.' }
   ]);
   const [userQuery, setUserQuery] = useState('');
+  const [isBotTyping, setIsBotTyping] = useState(false);
 
   const faqs = [
     { q: 'What is your typical project timeline?', a: 'Standard web apps take 2-3 weeks. Express design & CBT setups can be delivered in 5-7 days.', cat: 'Timelines' },
@@ -115,16 +116,36 @@ export default function ClientAutomationsHub() {
     { q: 'Can ExamGuard CBT run offline on local school servers?', a: 'Yes! ExamGuard supports completely offline LAN deployment with zero internet dependence and anti-cheat hardware locking.', cat: 'CBT Systems' }
   ];
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userQuery.trim()) return;
+    if (!userQuery.trim() || isBotTyping) return;
     const text = userQuery;
     setChatMessages(prev => [...prev, { sender: 'user', text }]);
     setUserQuery('');
+    setIsBotTyping(true);
 
-    // Generate intelligent responses
-    setTimeout(() => {
-      let botReply = "Thank you for reaching out! Our team handles high-concurrency systems, UI design, and business automation. You can also chat directly on WhatsApp for immediate custom quotes.";
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: text,
+          stream: false,
+          messages: [
+            ...chatMessages.map(m => ({
+              role: m.sender === 'user' ? 'user' : 'assistant',
+              content: m.text
+            })),
+            { role: 'user', content: text }
+          ]
+        })
+      });
+
+      const data = await response.json();
+      const botReply = data.text || "Thank you for reaching out! Our team is standing by to help build your next application.";
+      setChatMessages(prev => [...prev, { sender: 'bot', text: botReply }]);
+    } catch (err) {
+      let botReply = "Thank you for reaching out! Our team handles high-concurrency systems, UI design, and business automation. You can also chat directly on WhatsApp (+234 912 781 3092) for immediate custom quotes.";
       const lower = text.toLowerCase();
       if (lower.includes('price') || lower.includes('cost') || lower.includes('charge')) {
         botReply = "Projects start from $150 for branding/UI designs and $350 for custom full-stack web applications. Use our interactive Scoping tab for an exact instant cost estimate!";
@@ -134,7 +155,9 @@ export default function ClientAutomationsHub() {
         botReply = `You can book an instant call via the Scoping tab, or chat with Clement directly on WhatsApp: ${SITE_METADATA.social.whatsapp.url}`;
       }
       setChatMessages(prev => [...prev, { sender: 'bot', text: botReply }]);
-    }, 800);
+    } finally {
+      setIsBotTyping(false);
+    }
   };
 
   // --- Automation 4 State: Contracts, Invoicing & Receipts ---
@@ -512,16 +535,19 @@ export default function ClientAutomationsHub() {
                 <div className="flex items-center justify-between pb-3 border-b border-white/10">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-lime-green animate-pulse" />
-                    <span className="font-mono text-xs uppercase font-bold">IcePab AI Assistant</span>
+                    <div>
+                      <span className="font-mono text-xs uppercase font-bold block leading-none">IcePab Customer AI</span>
+                      <span className="text-[9px] font-mono text-white/40 block mt-1">MiniMax-M2.7 // Dahl Global</span>
+                    </div>
                   </div>
-                  <span className="text-[9px] font-mono text-electric-blue">Active 24/7</span>
+                  <span className="text-[9px] font-mono text-lime-green px-2 py-0.5 bg-lime-green/10 border border-lime-green/30 rounded">Inference Online</span>
                 </div>
 
                 <div className="flex-1 overflow-y-auto my-4 space-y-3 pr-2">
                   {chatMessages.map((msg, i) => (
                     <div 
                       key={i} 
-                      className={`p-3.5 rounded-xl text-xs font-mono leading-relaxed ${
+                      className={`p-3.5 rounded-xl text-xs font-mono leading-relaxed whitespace-pre-wrap ${
                         msg.sender === 'user' 
                           ? 'bg-electric-blue/20 text-white ml-8 border border-electric-blue/30' 
                           : 'bg-white/5 text-text-dim mr-8 border border-white/10'
@@ -530,6 +556,12 @@ export default function ClientAutomationsHub() {
                       {msg.text}
                     </div>
                   ))}
+                  {isBotTyping && (
+                    <div className="p-3 rounded-xl bg-white/5 text-electric-blue text-xs font-mono mr-8 border border-white/10 animate-pulse flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 bg-electric-blue rounded-full animate-ping" />
+                      <span>MiniMax-M2.7 thinking...</span>
+                    </div>
+                  )}
                 </div>
 
                 <form onSubmit={handleSendMessage} className="flex gap-2 pt-3 border-t border-white/10">

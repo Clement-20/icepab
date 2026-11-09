@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PageWrapper } from '../components/PageContainers';
 import { projectData } from '../data/projects';
-import { ExternalLink, Layers, Plus, Edit2, Trash2, CheckCircle2, Clock, Key, ShieldCheck } from 'lucide-react';
+import { ExternalLink, Layers, Plus, Edit2, Trash2, CheckCircle2, Clock, Key, ShieldCheck, Globe, Share2, Image as ImageIcon } from 'lucide-react';
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'listings' | 'automations' | 'portal'>('listings');
+  const [activeTab, setActiveTab] = useState<'listings' | 'automations' | 'portal' | 'metadata'>('listings');
   
   // Work Listings State
   const [projects, setProjects] = useState(projectData);
@@ -33,6 +33,48 @@ export default function AdminDashboard() {
 
   const [newKeyInput, setNewKeyInput] = useState('');
   const [newClientInput, setNewClientInput] = useState('');
+
+  // Metadata Editor State
+  const [metaSubTab, setMetaSubTab] = useState<'pages' | 'portfolio'>('pages');
+  
+  const [pageMetadataList, setPageMetadataList] = useState([
+    { key: 'home', name: 'Home / Landing Page', path: '/', title: 'Banmeke IfeOluwa Elijah (ICEPAB) | High-Performance SaaS Architect', description: 'The official workspace of Clement IfeOluwa (ICEPAB) - specializing in secure computer-based testing, SaaS development, and graphic design.', image: 'https://icepab.name.ng/logo.png' },
+    { key: 'portfolio', name: 'Portfolio / Work Showcase', path: '/portfolio', title: 'Portfolio & Web App Showcases | ICEPAB', description: 'Explore live SaaS deployments, secure apps, and distributed cloud workflows engineered by ICEPAB.', image: 'https://icepab.name.ng/logo.png' },
+    { key: 'automations', name: 'Client Automations Hub', path: '/automations', title: 'High-Demand Client Automations & Scoping | ICEPAB', description: 'Interactive project scoping calculator, booking calendars, and automated client workflow pipelines.', image: 'https://icepab.name.ng/logo.png' },
+    { key: 'reviews', name: 'Client Reviews & Rating Portal', path: '/reviews', title: 'Client Reviews & Rating Portal | ICEPAB', description: 'Verified reviews and feedback ratings for ICEPAB digital web solutions and design architectures.', image: 'https://icepab.name.ng/logo.png' },
+    { key: 'about', name: 'About Profile', path: '/about', title: 'About Banmeke IfeOluwa Elijah (ICEPAB) | Systems Developer', description: 'Professional background, business administration studies, and technical expertise of Clement IfeOluwa.', image: 'https://icepab.name.ng/logo.png' },
+    { key: 'designs', name: 'Design Artifacts Gallery', path: '/designs', title: 'UI/UX Interactive Galleries & Brand Systems | ICEPAB', description: 'Museum archive of visual explorations, corporate identity, and interactive interface prototypes.', image: 'https://icepab.name.ng/logo.png' },
+    { key: 'stories', name: 'Editorial Blog Feed', path: '/stories', title: 'Editorial Transmissions & Business Automation Blog | ICEPAB', description: 'Developer logs, UI/UX articles, and system architecture essays.', image: 'https://icepab.name.ng/logo.png' },
+    { key: 'systems', name: 'Glass Box Systems', path: '/systems', title: 'Glass Box Architectural Overview | ICEPAB', description: 'Transparent live telemetry, system health, and secure infrastructural architecture.', image: 'https://icepab.name.ng/logo.png' },
+    { key: 'admin', name: 'Admin Substrate Console', path: '/admin', title: 'Secure Operator Admin Substrate | ICEPAB Systems', description: 'Encrypted administrative command center and secure file upload interface.', image: 'https://icepab.name.ng/logo.png' },
+  ]);
+
+  const [projectMetadataList, setProjectMetadataList] = useState(
+    projects.map(p => ({
+      id: p.id,
+      name: p.name,
+      title: `${p.name} | ICEPAB Portfolio Artifact`,
+      description: p.description,
+      image: p.image || 'https://icepab.name.ng/logo.png'
+    }))
+  );
+
+  const [editingMetaItem, setEditingMetaItem] = useState<any>(null);
+
+  useEffect(() => {
+    try {
+      const storedPages = localStorage.getItem('icepab_page_metadata_overrides');
+      if (storedPages) {
+        const parsed = JSON.parse(storedPages);
+        setPageMetadataList(prev => prev.map(p => parsed[p.key] ? { ...p, ...parsed[p.key] } : p));
+      }
+      const storedProj = localStorage.getItem('icepab_project_metadata_overrides');
+      if (storedProj) {
+        const parsed = JSON.parse(storedProj);
+        setProjectMetadataList(prev => prev.map(p => parsed[p.id] ? { ...p, ...parsed[p.id] } : p));
+      }
+    } catch (e) {}
+  }, []);
 
   const handleSaveListing = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,6 +107,32 @@ export default function AdminDashboard() {
     alert('Client Portal Access Key generated!');
   };
 
+  const handleSaveMetadata = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingMetaItem) return;
+
+    if (metaSubTab === 'pages') {
+      const updated = pageMetadataList.map(p => p.key === editingMetaItem.key ? editingMetaItem : p);
+      setPageMetadataList(updated);
+      const overrides: Record<string, any> = {};
+      updated.forEach(p => {
+        overrides[p.key] = { title: p.title, description: p.description, image: p.image };
+      });
+      localStorage.setItem('icepab_page_metadata_overrides', JSON.stringify(overrides));
+      alert(`Page metadata for "${editingMetaItem.name}" successfully updated and saved!`);
+    } else {
+      const updated = projectMetadataList.map(p => p.id === editingMetaItem.id ? editingMetaItem : p);
+      setProjectMetadataList(updated);
+      const overrides: Record<string, any> = {};
+      updated.forEach(p => {
+        overrides[p.id] = { title: p.title, description: p.description, image: p.image };
+      });
+      localStorage.setItem('icepab_project_metadata_overrides', JSON.stringify(overrides));
+      alert(`Portfolio item metadata for "${editingMetaItem.name}" successfully updated and saved!`);
+    }
+    setEditingMetaItem(null);
+  };
+
   return (
     <PageWrapper>
       <div className="py-20 px-6 max-w-6xl mx-auto text-white">
@@ -74,10 +142,10 @@ export default function AdminDashboard() {
             <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">Admin Dashboard</h1>
           </div>
 
-          <div className="flex gap-2 p-1.5 bg-white/[0.03] border border-white/10 rounded-2xl">
+          <div className="flex flex-wrap gap-2 p-1.5 bg-white/[0.03] border border-white/10 rounded-2xl">
             <button 
               onClick={() => setActiveTab('listings')}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
                 activeTab === 'listings' ? 'bg-electric-blue text-charcoal' : 'text-text-dim hover:text-white'
               }`}
             >
@@ -85,7 +153,7 @@ export default function AdminDashboard() {
             </button>
             <button 
               onClick={() => setActiveTab('automations')}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
                 activeTab === 'automations' ? 'bg-electric-blue text-charcoal' : 'text-text-dim hover:text-white'
               }`}
             >
@@ -93,11 +161,19 @@ export default function AdminDashboard() {
             </button>
             <button 
               onClick={() => setActiveTab('portal')}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
                 activeTab === 'portal' ? 'bg-electric-blue text-charcoal' : 'text-text-dim hover:text-white'
               }`}
             >
               Portal Keys
+            </button>
+            <button 
+              onClick={() => setActiveTab('metadata')}
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
+                activeTab === 'metadata' ? 'bg-electric-blue text-charcoal' : 'text-text-dim hover:text-white'
+              }`}
+            >
+              <Globe size={14} /> Metadata Editor
             </button>
           </div>
         </div>
@@ -105,7 +181,6 @@ export default function AdminDashboard() {
         {/* --- TAB 1: WORK LISTINGS MANAGER --- */}
         {activeTab === 'listings' && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Col: Existing Listings */}
             <div className="lg:col-span-2 space-y-4">
               <h2 className="text-xl font-black uppercase tracking-tight flex items-center justify-between">
                 <span>Active Work Listings ({projects.length})</span>
@@ -155,7 +230,6 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Right Col: Listing Form */}
             <div className="bg-surface border border-accent-border p-6 rounded-3xl h-fit">
               <h2 className="text-lg font-black uppercase tracking-tight mb-4">
                 {editingProject ? 'Edit Work Listing' : 'Post New Listing'}
@@ -197,7 +271,7 @@ export default function AdminDashboard() {
                 </div>
 
                 <div>
-                  <label className="text-[10px] text-text-dim uppercase mb-1 block">Image Preview URL (JPEG, PNG, PSD thumbnail)</label>
+                  <label className="text-[10px] text-text-dim uppercase mb-1 block">Image Preview URL (JPEG, PNG thumbnail)</label>
                   <input 
                     type="text" 
                     value={editingProject ? (editingProject.image || '') : newProject.image} 
@@ -330,6 +404,151 @@ export default function AdminDashboard() {
                   Generate & Link Portal
                 </button>
               </form>
+            </div>
+          </div>
+        )}
+
+        {/* --- TAB 4: METADATA EDITOR --- */}
+        {activeTab === 'metadata' && (
+          <div className="space-y-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-black uppercase tracking-tight">Metadata & OpenGraph Tag Editor</h2>
+                <p className="text-xs text-text-dim font-mono mt-1">Configure search indexing titles, descriptions, and link preview OG image tags for pages and individual portfolio items.</p>
+              </div>
+
+              <div className="flex gap-2 p-1 bg-white/5 border border-white/10 rounded-xl">
+                <button
+                  onClick={() => { setMetaSubTab('pages'); setEditingMetaItem(null); }}
+                  className={`px-4 py-2 rounded-lg text-xs font-bold uppercase transition-all ${
+                    metaSubTab === 'pages' ? 'bg-electric-blue text-charcoal' : 'text-text-dim hover:text-white'
+                  }`}
+                >
+                  Pages Metadata ({pageMetadataList.length})
+                </button>
+                <button
+                  onClick={() => { setMetaSubTab('portfolio'); setEditingMetaItem(null); }}
+                  className={`px-4 py-2 rounded-lg text-xs font-bold uppercase transition-all ${
+                    metaSubTab === 'portfolio' ? 'bg-electric-blue text-charcoal' : 'text-text-dim hover:text-white'
+                  }`}
+                >
+                  Portfolio Items ({projectMetadataList.length})
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Left Column: List */}
+              <div className="lg:col-span-2 space-y-3">
+                {metaSubTab === 'pages' ? (
+                  pageMetadataList.map((item) => (
+                    <div key={item.key} className="p-4 bg-surface border border-accent-border rounded-2xl flex items-center justify-between gap-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-sm text-white uppercase">{item.name}</span>
+                          <span className="text-[10px] font-mono text-electric-blue bg-electric-blue/10 px-2 py-0.5 rounded border border-electric-blue/30">{item.path}</span>
+                        </div>
+                        <p className="text-xs font-mono text-lime-green line-clamp-1">Title: {item.title}</p>
+                        <p className="text-xs text-text-dim line-clamp-1">Desc: {item.description}</p>
+                      </div>
+
+                      <button
+                        onClick={() => setEditingMetaItem({ ...item })}
+                        className="px-3 py-2 bg-white/10 hover:bg-electric-blue hover:text-charcoal text-white text-xs font-bold uppercase rounded-xl transition-colors flex items-center gap-1.5 shrink-0"
+                      >
+                        <Edit2 size={12} /> Edit Tags
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  projectMetadataList.map((item) => (
+                    <div key={item.id} className="p-4 bg-surface border border-accent-border rounded-2xl flex items-center justify-between gap-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-sm text-white uppercase">{item.name}</span>
+                          <span className="text-[10px] font-mono text-lime-green bg-lime-green/10 px-2 py-0.5 rounded border border-lime-green/30">ID: {item.id}</span>
+                        </div>
+                        <p className="text-xs font-mono text-electric-blue line-clamp-1">Title: {item.title}</p>
+                        <p className="text-xs text-text-dim line-clamp-1">Desc: {item.description}</p>
+                      </div>
+
+                      <button
+                        onClick={() => setEditingMetaItem({ ...item })}
+                        className="px-3 py-2 bg-white/10 hover:bg-lime-green hover:text-charcoal text-white text-xs font-bold uppercase rounded-xl transition-colors flex items-center gap-1.5 shrink-0"
+                      >
+                        <Edit2 size={12} /> Edit Tags
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Right Column: Edit Form */}
+              <div className="bg-surface border border-accent-border p-6 rounded-3xl h-fit">
+                <h3 className="text-lg font-black uppercase tracking-tight mb-4 flex items-center gap-2">
+                  <Share2 size={18} className="text-electric-blue" />
+                  {editingMetaItem ? `Editing: ${editingMetaItem.name || editingMetaItem.id}` : 'Select Item to Edit'}
+                </h3>
+
+                {editingMetaItem ? (
+                  <form onSubmit={handleSaveMetadata} className="space-y-4 font-mono text-xs">
+                    <div>
+                      <label className="text-[10px] text-text-dim uppercase mb-1 block">Meta Title (Browser Tab & Search)</label>
+                      <input
+                        type="text"
+                        required
+                        value={editingMetaItem.title}
+                        onChange={(e) => setEditingMetaItem({ ...editingMetaItem, title: e.target.value })}
+                        className="w-full p-3 bg-black/60 border border-white/10 rounded-xl text-white focus:outline-none focus:border-electric-blue"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[10px] text-text-dim uppercase mb-1 block">Meta Description (SEO snippet)</label>
+                      <textarea
+                        rows={3}
+                        required
+                        value={editingMetaItem.description}
+                        onChange={(e) => setEditingMetaItem({ ...editingMetaItem, description: e.target.value })}
+                        className="w-full p-3 bg-black/60 border border-white/10 rounded-xl text-white focus:outline-none focus:border-electric-blue"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[10px] text-text-dim uppercase mb-1 block">OpenGraph (OG) Image URL (Social Preview)</label>
+                      <input
+                        type="text"
+                        required
+                        value={editingMetaItem.image}
+                        onChange={(e) => setEditingMetaItem({ ...editingMetaItem, image: e.target.value })}
+                        placeholder="https://..."
+                        className="w-full p-3 bg-black/60 border border-white/10 rounded-xl text-white focus:outline-none focus:border-electric-blue"
+                      />
+                    </div>
+
+                    {editingMetaItem.image && (
+                      <div className="p-3 bg-black/40 rounded-xl border border-white/10">
+                        <span className="text-[9px] text-text-dim uppercase block mb-2">OG Image Preview Card</span>
+                        <img src={editingMetaItem.image} alt="OG Preview" className="w-full h-32 object-cover rounded-lg border border-white/10" />
+                      </div>
+                    )}
+
+                    <div className="pt-2 flex gap-2">
+                      <button type="submit" className="flex-1 py-3 bg-lime-green text-charcoal font-black uppercase tracking-wider rounded-xl hover:bg-white transition-colors">
+                        Save Metadata Tags
+                      </button>
+                      <button type="button" onClick={() => setEditingMetaItem(null)} className="px-4 py-3 bg-white/10 text-white font-bold uppercase rounded-xl">
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="text-center py-12 text-text-dim font-mono text-xs">
+                    <ImageIcon size={32} className="mx-auto mb-3 opacity-40" />
+                    <p>Click "Edit Tags" on any page or portfolio item from the list to modify its title, description, and OpenGraph image preview tags.</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}

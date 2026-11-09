@@ -40,22 +40,6 @@ const designDetails: Record<string, DesignDetail> = {
     securityLevel: 'Military Grade (AES-256-GCM)',
     externalUrl: 'https://oau.cbt.icepab.name.ng'
   },
-  'flex-store': {
-    id: 'flex-store',
-    name: 'Flex Store',
-    tagline: 'Modern Web Storefront & Delivery Engine',
-    description: 'High-speed, lightweight e-commerce storefront architectures optimized for fast load times and instant digital asset downloads.',
-    longDescription: 'Flex Store is a lightning-fast digital asset e-commerce engine designed to eliminate friction in digital distribution. Utilizing advanced edge caching, secure transient download keys, and automated Stripe webhooks, it facilitates seamless global digital checkouts with instant post-purchase download delivery. Built with absolute visual clarity and a responsive, touch-optimized fluid grid system.',
-    category: 'E-commerce & Web Systems',
-    status: 'Live Operation',
-    color: '#FFD700',
-    techStack: ['Vite', 'React 18', 'Tailwind CSS', 'Stripe API', 'Firebase Firestore', 'Google Cloud Functions'],
-    features: ['Dynamic Checkout Flow', 'Secure Expiring Download Links', 'Real-time Sales Analytics Panel', 'Automated tax and invoice dispatch'],
-    latency: '98/100 Google Lighthouse Speed',
-    concurrency: '10,000+ daily sessions',
-    securityLevel: 'PCI-DSS Compliant Gateway Integration',
-    externalUrl: '#'
-  },
   'ice-net': {
     id: 'ice-net',
     name: 'Ice-Net Workflow',
